@@ -1,0 +1,7 @@
+[core]
+	editor = vim
+[user]
+	name = Wesley Curtis
+    email = wesley.curtis@fayebsg.com
+[color]
+    ui = auto
