@@ -126,4 +126,9 @@ function snav {
     fi
 }
 
+function bbclone {
+    git clone https://wescurtis@bitbucket.org/wescurtis/$1
+}
+
 alias perm='sudo chmod -R 775 `pwd`;sudo chgrp -R www-data `pwd`;sudo chown -R www-data `pwd`'
+alias manifest='php -f /home/wes/src/FAYBUS-SugarTools/PackageCreator/create.php'
