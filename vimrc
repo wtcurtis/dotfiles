@@ -561,3 +561,4 @@ endfunction
 
 autocmd VimEnter * call NT()
 au BufNewFile,BufRead *.twig set syntax=htmljinja
+imap jk <ESC>
