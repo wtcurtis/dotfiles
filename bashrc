@@ -24,7 +24,7 @@ function parse_git_branch {
     git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\ \[\1\]/'
 }
 
-PS1="\[\e[0;32m\]\u\[\e[0;32m\]@\[\e[0;32m\]\h\[\e[0;37m\]:\[\e[0;34m\]\w\[\e[0;31m\]\$(parse_git_branch) \[\e[0;37m\]$ \[\e[0m\]"
+PS1="\[\e[1;32m\]\u\[\e[1;32m\]@\[\e[1;32m\]\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\]\$(parse_git_branch) \[\e[1;37m\]$ \[\e[0m\]"
 
 # enable color support of ls and also add handy aliases
 
