@@ -79,3 +79,5 @@ alias manifest='php -f /home/wes/src/FAYBUS-SugarTools/PackageCreator/create.php
 function bbclone {
     git clone git@bbwes:wescurtis/$1
 }
+
+alias tmux="TERM=screen-256color tmux"
