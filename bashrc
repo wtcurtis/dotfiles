@@ -77,5 +77,5 @@ alias perm='sudo chmod -R 775 `pwd`;sudo chgrp -R www-data `pwd`;sudo chown -R w
 alias manifest='php -f /home/wes/src/FAYBUS-SugarTools/PackageCreator/create.php'
 
 function bbclone {
-    git clone https://wescurtis@bitbucket.org/wescurtis/$1
+    git clone git@bbwes:wescurtis/$1
 }
