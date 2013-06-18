@@ -552,6 +552,8 @@ nnoremap <silent> <Plug>Kwbd :<C-u>Kwbd<CR>
 nmap <C-A> <Plug>Kwbd
 
 nmap <leader>w <C-W><C-W>
+nmap <leader>x :set paste<CR>
+nmap <leader>v :set nopaste<CR>
 
 function! NT()
     if 0 == argc()
