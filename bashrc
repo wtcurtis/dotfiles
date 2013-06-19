@@ -85,3 +85,4 @@ alias tmux="TERM=screen-256color tmux"
 
 alias fbsgup="sudo service ipsec start && sudo ipsec auto --add what && sudo ipsec whack --name what --listen --initiate"
 alias fbsgdown="sudo service ipsec stop"
+alias te="tail -f /var/log/apache2/error.log";
