@@ -75,6 +75,7 @@ alias ..="cd ../"
 
 alias perm='sudo chmod -R 775 `pwd`;sudo chgrp -R www-data `pwd`;sudo chown -R www-data `pwd`'
 alias manifest='php -f /home/wes/src/FAYBUS-SugarTools/PackageCreator/create.php'
+alias syntax="find . -name '*.php' | xargs -l1 php -l"
 
 function bbclone {
     git clone git@bbwes:wescurtis/$1
