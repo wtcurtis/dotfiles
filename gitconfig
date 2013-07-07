@@ -1,5 +1,6 @@
 [core]
-	editor = vim
+    editor = vim
+    filemode = false
 [user]
 	name = Wesley Curtis
     email = wesley.curtis@fayebsg.com

@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/var/www/SHASOL/upload/upgrades/module/3uJzxY'
+let g:netrw_dirhist_2='/var/www/SHASOL/custom/Extension/modules/Cases/Ext/Layoutdefs/Cases.php'
+let g:netrw_dirhist_3='/home/wes/src/parcon/CasesModuleMods'
+let g:netrw_dirhist_4='/var/www/Dremed/custom/metadata'
+let g:netrw_dirhist_5='/var/www/Dremed/modules/fbsg_NoteSelect'
