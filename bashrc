@@ -86,3 +86,15 @@ alias tmux="TERM=screen-256color tmux"
 alias fbsgup="sudo service ipsec start && sudo ipsec auto --add what && sudo ipsec whack --name what --listen --initiate"
 alias fbsgdown="sudo service ipsec stop"
 alias te="tail -f /var/log/apache2/error.log";
+
+function ifind {
+    find $1 -iname $2
+}
+
+function pfind {
+    find $1 -iname '*.php'
+}
+
+function pgrep {
+    find $1 -iname '*.php' | xargs grep $2
+}
