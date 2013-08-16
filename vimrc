@@ -564,3 +564,11 @@ endfunction
 autocmd VimEnter * call NT()
 au BufNewFile,BufRead *.twig set syntax=htmljinja
 imap jk <ESC>
+
+"NERDTree Settings
+" -------------------------------------------------------------
+nmap <silent> ,nt :NERDTreeToggle<cr>
+let NERDTreeShowHidden = 0 
+
+" NERDComment
+map ,c <Leader>ci
