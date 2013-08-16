@@ -46,7 +46,7 @@ fi
 
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
+#alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # some more ls aliases
@@ -98,3 +98,8 @@ function pfind {
 function pgrep {
     find $1 -iname '*.php' | xargs grep $2
 }
+
+alias cb='xclip -selection c -i'
+
+stty werase undef
+bind 'C-w:unix-filename-rubout'
