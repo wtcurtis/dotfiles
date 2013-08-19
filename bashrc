@@ -99,6 +99,10 @@ function pgrep {
     find $1 -iname '*.php' | xargs grep $2
 }
 
+PATH_TO_SUGAR_BUILD="/home/wes/src/SugarBuild/build.php"
+
+alias sugar_build="php $PATH_TO_SUGAR_BUILD --basedir=./ --specpath=./build_spec.php"
+
 alias cb='xclip -selection c -i'
 
 stty werase undef
