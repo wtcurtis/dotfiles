@@ -225,12 +225,6 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
-" Close the current buffer
-map <leader>bd :Bclose<cr>
-
-" Close all the buffers
-map <leader>ba :1,300 bd!<cr>
-
 " Use the arrows to something usefull
 map <right> :bn<cr>
 map <left> :bp<cr>
@@ -378,9 +372,6 @@ let g:miniBufExplSplitBelow=1
 let g:bufExplorerSortBy = "name"
 
 autocmd BufRead,BufNew :call UMiniBufExplorer
-
-map <leader>u :TMiniBufExplorer<cr>
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Omni complete functions
@@ -572,3 +563,32 @@ let NERDTreeShowHidden = 0
 
 " NERDComment
 map ,c <Leader>ci
+
+" Reselect visual block after indent
+vnoremap < <gv
+vnoremap > >gv
+
+" Disable paste mode when leaving insert mode
+au InsertLeave * set nopaste
+
+" Toggle paste
+set pastetoggle=<F8>
+
+" Enable persistent undo
+if exists("+undofile")
+    set udf
+    set undodir=~/.vimundo
+endif
+
+" Map ; to :
+nnoremap ; :
+
+" Highlight trailing whitespace
+highlight WhitespaceEOL ctermbg=Red guibg=Red
+match WhitespaceEOL /\s\+$/
+
+" List buffers
+nmap <leader>b :ls<CR>:buffer<Space>
+
+" Switch back to last file in buffer
+nmap <leader><leader> :b#<cr>
