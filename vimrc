@@ -379,19 +379,6 @@ autocmd BufRead,BufNew :call UMiniBufExplorer
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Spell checking
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
-
-"Shortcuts using <leader>
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
-
-
 """"""""""""""""""""""""""""""
 " => Python section
 """"""""""""""""""""""""""""""
@@ -592,3 +579,6 @@ nmap <leader>b :ls<CR>:buffer<Space>
 
 " Switch back to last file in buffer
 nmap <leader><leader> :b#<cr>
+
+" Remove all trailing whitespace
+nnoremap <leader>s :%s/\s\+$//<cr>:let @/=''<cr>
