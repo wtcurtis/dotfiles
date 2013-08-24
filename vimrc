@@ -379,19 +379,6 @@ autocmd BufRead,BufNew :call UMiniBufExplorer
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Spell checking
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"Pressing ,ss will toggle and untoggle spell checking
-map <leader>ss :setlocal spell!<cr>
-
-"Shortcuts using <leader>
-map <leader>sn ]s
-map <leader>sp [s
-map <leader>sa zg
-map <leader>s? z=
-
-
 """"""""""""""""""""""""""""""
 " => Python section
 """"""""""""""""""""""""""""""
@@ -559,7 +546,7 @@ imap jk <ESC>
 "NERDTree Settings
 " -------------------------------------------------------------
 nmap <silent> ,nt :NERDTreeToggle<cr>
-let NERDTreeShowHidden = 0 
+let NERDTreeShowHidden = 1
 
 " NERDComment
 map ,c <Leader>ci
@@ -595,3 +582,7 @@ nmap <leader><leader> :b#<cr>
 
 " DelimitMate
 let delimitMate_expand_cr = 1
+
+" Remove all trailing whitespace
+nnoremap <leader>s :%s/\s\+$//<cr>:let @/=''<cr>
+
