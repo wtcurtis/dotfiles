@@ -592,3 +592,6 @@ nmap <leader>b :ls<CR>:buffer<Space>
 
 " Switch back to last file in buffer
 nmap <leader><leader> :b#<cr>
+
+" DelimitMate
+let delimitMate_expand_cr = 1
