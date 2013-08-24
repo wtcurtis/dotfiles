@@ -546,7 +546,7 @@ imap jk <ESC>
 "NERDTree Settings
 " -------------------------------------------------------------
 nmap <silent> ,nt :NERDTreeToggle<cr>
-let NERDTreeShowHidden = 0 
+let NERDTreeShowHidden = 1
 
 " NERDComment
 map ,c <Leader>ci
@@ -582,3 +582,4 @@ nmap <leader><leader> :b#<cr>
 
 " Remove all trailing whitespace
 nnoremap <leader>s :%s/\s\+$//<cr>:let @/=''<cr>
+
