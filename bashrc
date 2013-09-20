@@ -78,7 +78,7 @@ alias manifest='php -f /home/wes/src/FAYBUS-SugarTools/PackageCreator/create.php
 alias syntax="find . -name '*.php' | xargs -l1 php -l"
 
 function bbclone {
-    git clone git@bbwes:wescurtis/$1
+    git clone git@bitbucket.org:wescurtis/$1
 }
 
 alias tmux="TERM=screen-256color tmux"
