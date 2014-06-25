@@ -1,0 +1,9 @@
+new -A -s Logs -n Logs 
+send-keys -t Logs.0 'tail -f /var/www/html/hawk/magento/var/log/exception.log | less' Enter
+
+splitw -h -p 50 -t 0 'tail -f /var/log/hhvm/error.log | less'
+
+splitw -v -p 50 -t 0 'tail -f /var/log/php/php_errors.log | less'
+
+splitw -v -p 50 -t 1 'tail -f /var/www/html/hawk/magento/var/log/system.log | less'
+

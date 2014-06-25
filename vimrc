@@ -17,7 +17,7 @@ let g:mapleader = ","
 nmap <leader>w :w!<cr>
 
 " Fast editing of the .vimrc
-map <leader>e :e! ~/.vim_runtime/vimrc<cr>
+map <leader>e :e! ~/.vimrc<cr>
 
 " When vimrc is edited, reload it
 autocmd! bufwritepost vimrc source ~/.vim_runtime/vimrc
@@ -571,8 +571,8 @@ endif
 nnoremap ; :
 
 " Highlight trailing whitespace
-highlight WhitespaceEOL ctermbg=Red guibg=Red
-match WhitespaceEOL /\s\+$/
+" highlight WhitespaceEOL ctermbg=Red guibg=Red
+" match WhitespaceEOL /\s\+$/
 
 " List buffers
 nmap <leader>b :ls<CR>:buffer<Space>
@@ -586,3 +586,22 @@ let delimitMate_expand_cr = 1
 " Remove all trailing whitespace
 nnoremap <leader>s :%s/\s\+$//<cr>:let @/=''<cr>
 
+function! GetVisual() range
+    try
+        let a_save = @a
+        normal! gv"ay
+        return @a
+    finally
+        let @a = a_save
+    endtry
+endfunction
+
+
+
+" current word
+nnoremap gR :execute " grep -srnw --binary-files=without-match --exclude-dir=.git -e " . expand("<cword>") . " " <bar> cwindow<CR>
+
+" visual selection
+vnoremap gr :<C-U>execute  " grep -srnw --binary-files=without-match --exclude-dir=.git -e '" . GetVisual() . "' " <bar> cwindow<CR>
+
+vnoremap fr :<C-U>execute  " find \. -name '*" . GetVisual() . "' " <bar> cwindow<CR>

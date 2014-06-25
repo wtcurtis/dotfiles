@@ -1,0 +1,121 @@
+Host matt
+User matthew
+HostName 10.10.99.69
+ServerAliveInterval 60
+
+Host github.com
+HostName github.com
+User git
+IdentityFile ~/.ssh/wes
+IdentitiesOnly yes
+
+Host bitbucket.org
+HostName bitbucket.org
+User git
+IdentityFile ~/.ssh/wes
+IdentitiesOnly yes
+
+Host workstation
+User wes
+HostName 10.10.99.130
+ServerAliveInterval 60
+IdentitiesOnly yes
+
+Host saasportal
+User fbsg
+HostName 10.10.99.37
+ServerAliveInterval 60
+IdentityFile ~/.ssh/id_rsa.pub
+IdentitiesOnly yes
+
+Host a1text
+User root
+HostName 65.223.36.37
+ServerAliveInterval 60
+IdentitiesOnly yes
+
+Host uflacweb
+User ubuntu
+HostName 50.18.109.180
+ServerAliveInterval 60
+IdentitiesOnly yes
+IdentityFile ~/.ssh/uflac.pem
+
+Host fbsgproxy
+User wes
+HostName 10.10.99.67
+ServerAliveInterval 60
+IdentitiesOnly yes
+PubkeyAuthentication no
+
+Host uflacweb
+User ubuntu
+HostName 50.18.109.180
+IdentityFile ~/.ssh/uflac.pem
+ServerAliveInterval 60
+
+Host fbsgsugar
+User wes
+HostName 10.10.99.85
+IdentitiesOnly yes
+ServerAliveInterval 60
+
+Host wsrc
+User wes
+HostName 10.10.99.35
+IdentitiesOnly yes
+IdentityFile ~/.ssh/id_rsa.pub
+ServerAliveInterval 60
+
+Host fbsgdemoserver
+HostName 54.215.5.65
+User ubuntu
+ServerAliveInterval 60
+IdentityFile ~/.ssh/fayebsgdemoserver20140205.pem
+IdentitiesOnly yes
+
+Host demowes
+HostName 54.215.5.65
+User wes
+ServerAliveInterval 60
+IdentityFile ~/.ssh/id_rsa.pub
+IdentitiesOnly yes
+
+Host demojason
+HostName 54.215.5.65
+User jasonh
+ServerAliveInterval 60
+IdentityFile ~/.ssh/id_rsa_jason.pub
+IdentitiesOnly yes
+
+Host comconsugar
+HostName 54.225.113.31
+User ubuntu
+ServerAliveInterval 60
+IdentityFile ~/.ssh/comconsugar
+IdentitiesOnly yes
+
+Host cube
+HostName sugar.cubedepot.com
+User ubuntu
+IdentitiesOnly yes
+IdentityFile ~/.ssh/klowry_fbsg_new.pub
+
+Host sato
+IdentitiesOnly yes
+HostName vps11199.inmotionhosting.com
+IdentityFile ~/.ssh/sato
+ServerAliveInterval 60
+User satote5
+
+Host vision_prod
+IdentitiesOnly yes
+HostName 192.168.105.33
+ServerAliveInterval 60
+User fayebsg
+
+Host vision_dev
+IdentitiesOnly yes
+HostName 192.168.105.32
+ServerAliveInterval 60
+User fayebsg
