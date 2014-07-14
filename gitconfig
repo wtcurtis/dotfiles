@@ -3,8 +3,12 @@
     filemode = false
 [user]
 	name = Wesley Curtis
-    email = wesley.curtis@fayebsg.com
+    email = wtcurtis@gmail.com
 [color]
     ui = auto
 [alias]
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+    au = update-index --assume-unchanged
+    ac = update-index --no-assume-unchanged
+    ignored = !git ls-files -v | grep "^[[:lower:]]" --color
+

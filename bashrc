@@ -123,6 +123,8 @@ alias gp="git add -p"
 alias gc="git commit"
 alias gd="git diff"
 alias gco="git checkout"
+alias gau="git update-index --assume-unchanged"
+alias gac="git update-index --no-assume-unchanged"
 
 alias lookup="php ~/src/fbsg-sugarclient-credential-lookup-utility/bin/console lookup"
 alias makeUser="php ~/src/fbsg-sugarclient-credential-lookup-utility/bin/console fbsg:create"
@@ -147,3 +149,4 @@ function tailmag {
 }
 
 set -o vi
+

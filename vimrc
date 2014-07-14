@@ -605,3 +605,7 @@ nnoremap gR :execute " grep -srnw --binary-files=without-match --exclude-dir=.gi
 vnoremap gr :<C-U>execute  " grep -srnw --binary-files=without-match --exclude-dir=.git -e '" . GetVisual() . "' " <bar> cwindow<CR>
 
 vnoremap fr :<C-U>execute  " find \. -name '*" . GetVisual() . "' " <bar> cwindow<CR>
+
+nnoremap pl :! find \. -name '*.php' <bar> xargs -l1 php -l<CR>
+
+" call Vdebug_load_options({ 'port' : '9001' })
