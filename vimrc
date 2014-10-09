@@ -69,19 +69,12 @@ syntax enable "Enable syntax hl
   " set gfn=Consolas:h9:cANSI
   set shell=/bin/bash
 
-"if has("gui_running")
-"  set guioptions-=T
-"  set t_Co=256
-"  set background=dark
-"  colorscheme molokai
-"  set nonu
-"else
-  colorscheme molokai
-  set t_Co=256
-  set background=dark
-  
-  set nonu
-"endif
+colorscheme molokai
+set t_Co=256
+set background=dark
+hi Normal ctermbg=none ctermfg=none
+
+set nonu
 
 set encoding=utf8
 try
@@ -169,28 +162,12 @@ endfunction
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Command mode related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Smart mappings on the command line
-cno $h e ~/
-cno $d e ~/Desktop/
-cno $j e ./
-cno $c e <C-\>eCurrentFileDir("e")<cr>
-
-" $q is super useful when browsing on the command line
-cno $q <C-\>eDeleteTillSlash()<cr>
-
 " Bash like keys for the command line
 cnoremap <C-E>		<End>
 cnoremap <C-K>		<C-U>
 
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
-
-" Useful on some European keyboards
-map ½ $
-imap ½ $
-vmap ½ $
-cmap ½ $
-
 
 func! Cwd()
   let cwd = getcwd()
@@ -214,9 +191,7 @@ endfunc
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Map space to / (search) and c-space to ? (backgwards search)
-map <space> /
-map <c-space> ?
+" Kill search highlight
 map <silent> <leader><cr> :noh<cr>
 
 " Smart way to move btw. windows
@@ -225,7 +200,7 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
-" Use the arrows to something usefull
+" Use the arrows to something useful
 map <right> :bn<cr>
 map <left> :bp<cr>
 
@@ -292,26 +267,6 @@ endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Parenthesis/bracket expanding
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"vnoremap $1 <esc>`>a)<esc>`<i(<esc>
-"vnoremap $2 <esc>`>a]<esc>`<i[<esc>
-"vnoremap $3 <esc>`>a}<esc>`<i{<esc>
-"vnoremap $$ <esc>`>a"<esc>`<i"<esc>
-"vnoremap $q <esc>`>a'<esc>`<i'<esc>
-"vnoremap $e <esc>`>a"<esc>`<i"<esc>
-
-" Map auto complete of (, ", ', [
-"inoremap $1 ()<esc>i
-"inoremap $2 []<esc>i
-"inoremap $3 {}<esc>i
-"inoremap $4 {<esc>o}<esc>O
-"inoremap $q ''<esc>i
-"inoremap $e ""<esc>i
-"inoremap $t <><esc>i
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General Abbrevs
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
@@ -321,7 +276,7 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "Remap VIM 0
-map 0 ^
+" map 0 ^
 
 "Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
@@ -558,9 +513,6 @@ vnoremap > >gv
 " Disable paste mode when leaving insert mode
 au InsertLeave * set nopaste
 
-" Toggle paste
-set pastetoggle=<F8>
-
 " Enable persistent undo
 if exists("+undofile")
     set udf
@@ -599,7 +551,13 @@ endfunction
 
 
 " current word
-nnoremap gR :execute " grep -srnw --binary-files=without-match --exclude-dir=.git -e " . expand("<cword>") . " " <bar> cwindow<CR>
+nnoremap gR :execute " grep -srnw --binary-files=without-match --exclude-dir=.git -e '" . expand("<cword>") . "' " <bar> cwindow<CR>
+
+" current word, prepend 'function'
+nnoremap gRf :execute " grep -srnw --binary-files=without-match --exclude-dir=.git -e 'function " . expand("<cword>") . "' " <bar> cwindow<CR>
+
+" current word, prepand 'class'
+nnoremap gRc :execute " grep -srnw --binary-files=without-match --exclude-dir=.git -e 'class " . expand("<cword>") . "' " <bar> cwindow<CR>
 
 " visual selection
 vnoremap gr :<C-U>execute  " grep -srnw --binary-files=without-match --exclude-dir=.git -e '" . GetVisual() . "' " <bar> cwindow<CR>
@@ -608,4 +566,3 @@ vnoremap fr :<C-U>execute  " find \. -name '*" . GetVisual() . "' " <bar> cwindo
 
 nnoremap pl :! find \. -name '*.php' <bar> xargs -l1 php -l<CR>
 
-" call Vdebug_load_options({ 'port' : '9001' })

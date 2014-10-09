@@ -1,14 +1,16 @@
 [core]
     editor = vim
     filemode = false
+	autocrlf = input
 [user]
 	name = Wesley Curtis
-    email = wtcurtis@gmail.com
+    email = wcurtis@xennsoft.com
 [color]
     ui = auto
 [alias]
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
-    au = update-index --assume-unchanged
-    ac = update-index --no-assume-unchanged
+    ignore = update-index --assume-unchanged
+    watch = update-index --no-assume-unchanged
     ignored = !git ls-files -v | grep "^[[:lower:]]" --color
+    co = checkout
 
