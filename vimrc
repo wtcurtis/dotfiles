@@ -1,3 +1,5 @@
+source ~/.vimCommon
+
 " Sets how many lines of history VIM has to remember
 set history=700
 
@@ -8,11 +10,6 @@ filetype indent on
 " Set to auto read when a file is changed from the outside
 set autoread
 
-" With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
-let mapleader = ","
-let g:mapleader = ","
-
 " Fast saving
 nmap <leader>w :w!<cr>
 
@@ -22,36 +19,12 @@ map <leader>e :e! ~/.vimrc<cr>
 " When vimrc is edited, reload it
 autocmd! bufwritepost vimrc source ~/.vim_runtime/vimrc
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => VIM user interface
+" => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the curors - when moving vertical..
-set so=7
 
-set wildmenu "Turn on WiLd menu
-
-set ruler "Always show current position
-
-set cmdheight=2 "The commandbar height
-
-set hid "Change buffer - without saving
-
-" Set backspace config
-set backspace=eol,start,indent
-set whichwrap+=<,>,h,l
-
-set ignorecase "Ignore case when searching
-
-set hlsearch "Highlight search things
-
-set incsearch "Make search act like search in modern browsers
-set nolazyredraw "Don't redraw while executing macros 
-
-set magic "Set magic on, for regular expressions
-
-set showmatch "Show matching bracets when text indicator is over them
-set mat=2 "How many tenths of a second to blink
+set lbr
+set tw=500
 
 " No sound on errors
 set noerrorbells
@@ -102,20 +75,6 @@ catch
 endtry
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set expandtab
-set shiftwidth=4
-set tabstop=4
-set smarttab
-
-set lbr
-set tw=500
-
-set ai "Auto indent
-set si "Smart indet
-set wrap "Wrap lines
 
 
 """"""""""""""""""""""""""""""
@@ -128,7 +87,6 @@ vnoremap <silent> # :call VisualSearch('b')<CR>
 
 " When you press gv you vimgrep after the selected text
 vnoremap <silent> gv :call VisualSearch('gv')<CR>
-map <leader>g :vimgrep // **/*.<left><left><left><left><left><left><left>
 
 
 function! CmdLine(str)
@@ -275,8 +233,6 @@ iab xdate <c-r>=strftime("%d/%m/%y %H:%M:%S")<cr>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"Remap VIM 0
-" map 0 ^
 
 "Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
@@ -485,7 +441,7 @@ nnoremap <silent> <Plug>Kwbd :<C-u>Kwbd<CR>
 nmap <C-A> <Plug>Kwbd
 
 nmap <leader>w <C-W><C-W>
-nmap <leader>x :set paste<CR>
+nmap <leader>x :set paste<CR>i
 nmap <leader>v :set nopaste<CR>
 
 function! NT()
@@ -496,7 +452,6 @@ endfunction
 
 autocmd VimEnter * call NT()
 au BufNewFile,BufRead *.twig set syntax=htmljinja
-imap jk <ESC>
 
 "NERDTree Settings
 " -------------------------------------------------------------
@@ -505,10 +460,6 @@ let NERDTreeShowHidden = 1
 
 " NERDComment
 map ,c <Leader>ci
-
-" Reselect visual block after indent
-vnoremap < <gv
-vnoremap > >gv
 
 " Disable paste mode when leaving insert mode
 au InsertLeave * set nopaste
@@ -519,8 +470,6 @@ if exists("+undofile")
     set undodir=~/.vimundo
 endif
 
-" Map ; to :
-nnoremap ; :
 
 " Highlight trailing whitespace
 " highlight WhitespaceEOL ctermbg=Red guibg=Red
@@ -534,9 +483,6 @@ nmap <leader><leader> :b#<cr>
 
 " DelimitMate
 let delimitMate_expand_cr = 1
-
-" Remove all trailing whitespace
-nnoremap <leader>s :%s/\s\+$//<cr>:let @/=''<cr>
 
 function! GetVisual() range
     try
@@ -565,4 +511,8 @@ vnoremap gr :<C-U>execute  " grep -srnw --binary-files=without-match --exclude-d
 vnoremap fr :<C-U>execute  " find \. -name '*" . GetVisual() . "' " <bar> cwindow<CR>
 
 nnoremap pl :! find \. -name '*.php' <bar> xargs -l1 php -l<CR>
+
+au BufNewFile,BufRead *.fs set syntax=fsharp
+
+"autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
 

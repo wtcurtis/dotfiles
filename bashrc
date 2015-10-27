@@ -16,15 +16,26 @@ shopt -s histappend
 HISTSIZE=1000
 HISTFILESIZE=2000
 
+HAWKDIR="/var/www/html/hawk"
+EAGLEDIR="$HAWKDIR/eagle"
+WP_CONTENT_DIR="wp-content"
+SELENIUM_DIR="$EAGLEDIR/selenium"
+SELENIUM_SERVER="/home/wcurtis/Downloads/selenium/selenium-server-standalone-2.45.0.jar"
+
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
 function parse_git_branch {
-    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\ \[\1\]/'
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
 
-PS1="\[\e[1;32m\]\u\[\e[1;32m\]@\[\e[1;32m\]\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\]\$(parse_git_branch) \[\e[1;37m\]$ \[\e[0m\]"
+function getBracketBranch {
+    parse_git_branch | sed 's/\(.*\)/\[\1\]/'
+}
+
+#PS1="\[\e[1;32m\]\u\[\e[1;32m\]@\[\e[1;32m\]\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\]\$(parse_git_branch) \[\e[1;37m\]$ \[\e[0m\]"
+PS1="\[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
 
 # enable color support of ls and also add handy aliases
 
@@ -52,6 +63,7 @@ alias egrep='egrep --color=auto'
 # some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
+alias lls='ll --sort=time -r'
 alias l='ls -CF'
 
 alias ..="cd ../"
@@ -59,12 +71,12 @@ alias ..="cd ../"
 alias tmux="TERM=screen-256color tmux"
 
 alias te="tail -f /var/log/nginx/error.log";
-alias teh="tail -f /var/log/hhvm/error.log";
+alias teh="tail -f /var/log/hhvm/error.log -n 40";
 alias veh="vim /var/log/hhvm/error.log";
-alias tep="tail -f /var/log/php/php_errors.log";
+alias tep="tail -f /var/log/php/php_errors.log -n 40";
 alias vep="vim /var/log/php/php_errors.log";
-alias teg="tail -f /var/www/html/hawk/eagle/log.txt";
-alias veg="vim /var/www/html/hawk/eagle/log.txt";
+alias teg="tail -f $HAWKDIR/eagle/log.txt -n 40";
+alias veg="vim $HAWKDIR/eagle/log.txt";
 
 #nuclear options for permissions
 function perm {
@@ -90,21 +102,35 @@ bind 'C-w:unix-filename-rubout'
 PROMPT_COMMAND='history -a'
 
 alias gs="git status"
+alias gsh="git show"
+alias gshs="git show --stat"
 alias gl="git log"
+alias glnm="git log --no-merges"
 alias ga="git add"
-alias gp="git add -p"
+alias gap="git add -p"
 alias gc="git commit"
 alias gd="git diff"
+alias gds="git diff --stat"
 alias gco="git checkout"
+alias gcod="git checkout develop"
 alias gpo="git push origin"
+alias gpl="git push local"
+alias gpob="git push origin \`parse_git_branch\`"
 alias gpu="git pull origin"
+alias gpr="git pull --rebase origin"
+alias gprb="git pull --rebase origin \`parse_git_branch\`"
+alias gprd="git pull --rebase origin develop"
 alias gf="git fetch"
 alias gt="git tag -a"
 alias gtd="git tag -d"
 alias gtdr="git push origin :"
 alias gst="git stash"
+alias gsts="git stash show"
+alias gstsp="git stash show --patch"
 alias gstp="git stash pop"
+alias gsl="git stash list"
 alias gft="git fetch --tags"
+alias gfa="git fetch --all"
 
 alias gau="git update-index --assume-unchanged"
 alias gac="git update-index --no-assume-unchanged"
@@ -133,48 +159,163 @@ function title {
 }
 
 
-alias sa="cd /etc/nginx/sites-available && sudo vim && cd -"
+alias sa="cd /etc/nginx/sites-enabled && sudo vim && cd -"
 
 alias use_fpm="sudo service hhvm stop && sudo service php5-fpm start"
 alias use_hhvm="sudo service php5-fpm stop && sudo service hhvm start"
 
 # clear magento cache
-alias clearcache="cd /var/www/html/hawk/eagle/scripts && ./clearcache.sh hawk && cd -"
+alias clearcache="cd $HAWKDIR/eagle/scripts && ./clearcache.sh hawk && cd -"
 
 function tailmag {
-    tail -f /var/www/html/hawk/magento/var/log/$1.log
+    tail -f $HAWKDIR/magento/var/log/$1.log -n 40
 }
 
 function vmag {
-    vim /var/www/html/hawk/magento/var/log/$1.log
+    vim $HAWKDIR/magento/var/log/$1.log
 }
 
-alias fp="find . -name '*.php' | xargs grep --color"
-alias fpi="find . -name '*.php' | xargs grep --color -i"
+alias fc="find . -name '*.cs' | xargs grep 2>/dev/null --color"
+alias fci="find . -name '*.cs' | xargs grep 2>/dev/null --color -i"
+alias fp="find . -name '*.php' | xargs grep 2>/dev/null --color"
+alias fpi="find . -name '*.php' | xargs grep 2>/dev/null --color -i"
+alias fj="find . -name '*.js' | xargs grep 2>/dev/null --color"
+alias fji="find . -name '*js' | xargs grep 2>/dev/null --color -i"
+alias fx="find . -name '*.xml' | xargs grep 2>/dev/null --color"
+alias fxi="find . -name '*.xml' | xargs grep 2>/dev/null --color -i"
+alias fph="find . -name '*.phtml' | xargs grep 2>/dev/null --color"
+alias fphi="find . -name '*.phtml' | xargs grep 2>/dev/null --color -i"
+alias fa="find . -type f | xargs grep 2>/dev/null --color"
+alias fai="find . -type f | xargs grep 2>/dev/null --color -i"
+alias fm="find . -name xennsoft.manifest | xargs grep 2>/dev/null --color"
+alias fmi="find . -name xennsoft.manifest | xargs grep 2>/dev/null --color -i"
+alias fn="find . -name"
+alias ff="find . -type f"
+function fz {
+    find . -iname "*$1*"
+}
 
-alias taile="tail -f /var/www/html/hawk/eagle/log.txt"
-alias vime="vim /var/www/html/hawk/eagle/log.txt"
+function fzf {
+    find . -type f -iname "*$1*"
+}
+
+
+alias xg="xargs grep"
+alias xgi="xargs grep -i"
+
+alias tailb="tail -f $HAWKDIR/eagle/var/log/billing.log -n 40"
+alias vimb="vim $HAWKDIR/eagle/var/log/billing.log"
+alias taile="tail -f $HAWKDIR/eagle/log.txt -n 40"
+alias vime="vim $HAWKDIR/eagle/log.txt"
 
 #up 5 => go up 5 directories
 function up {
     for i in $(seq 1 $1); do cd ..; done
 }
 
-#use vi mode on command line
-set -o vi
+function tagn {
+    git tag -a `tn $1` -m \'${*:2}\'
+    ts $1
+}
 
 #completely annihilate phpstorm
 alias kill_storm="ps aux | grep phpstorm | grep -v grep | tr -s ' ' | cut -d ' ' -f 2 | xargs kill -9"
 
-alias eb="cd /var/www/html/hawk/eagle/classes/Billing"
-alias wp="cd /var/www/html/hawk/wordpress"
-alias wpp="cd /var/www/html/hawk/wordpress/wp-content/plugins"
-alias wpe="cd /var/www/html/hawk/wordpress/wp-content/plugins/xennsoft-eagle"
-alias mag="cd /var/www/html/hawk/magento"
-alias magc="cd /var/www/html/hawk/magento/app/code/local"
-alias magx="cd /var/www/html/hawk/magento/app/code/local/Xennsoft"
-alias hawk="cd /var/www/html/hawk"
-alias fuck="sudo ibus restart"
-alias gtg="git tag --list | grep -i"
+alias hawk="pushd $HAWKDIR &>/dev/null"
 
-alias alllog="multitail /var/log/hhvm/error.log /var/log/php/php_errors.log /var/www/html/hawk/eagle/log.txt"
+alias eb="pushd $HAWKDIR/eagle/classes/Billing &>/dev/null"
+alias ebt="php $EAGLEDIR/classes/Billing/test.php"
+alias ebin="pushd $HAWKDIR/eagle/bin &>/dev/null"
+alias e="pushd $HAWKDIR/eagle &>/dev/null"
+alias wp="pushd $HAWKDIR/wordpress &>/dev/null"
+alias wpp="pushd $HAWKDIR/wordpress/$WP_CONTENT_DIR/plugins &>/dev/null"
+alias wpe="pushd $HAWKDIR/wordpress/$WP_CONTENT_DIR/plugins/xennsoft-eagle &>/dev/null"
+
+D_MAG="$HAWKDIR/magento"
+D_MAGC="$D_MAG/app/code/local"
+D_MAGX="$D_MAGC/Xennsoft"
+D_MAGD="$D_MAG/app/design"
+D_MAGFT="$D_MAGD/frontend/base/default/template"
+D_MAGAT="$D_MAGD/adminhtml/default/default/template"
+D_MAGAL="$D_MAGD/adminhtml/default/default/layout"
+D_MAGFL="$D_MAGD/frontend/base/default/layout"
+alias mag="pushd $D_MAG &>/dev/null"
+alias magc="pushd $D_MAGC &>/dev/null"
+alias magx="pushd $D_MAGX &>/dev/null"
+alias magd="pushd $D_MAGD &>/dev/null"
+alias magft="pushd $D_MAGFT &>/dev/null"
+alias magat="pushd $D_MAGAT &>/dev/null"
+alias magfl="pushd $D_MAGFL &>/dev/null"
+alias magal="pushd $D_MAGAL &>/dev/null"
+
+alias fuck="ibus restart"
+alias gtg="git tag --list | grep -i"
+alias lx="vim $HAWKDIR/magento/app/etc/local.xml"
+
+alias tf="sed 's/[-]/ /g' | awk '{print $NF,$0}' | sort -n"
+
+alias alllog="multitail /var/log/hhvm/error.log /var/log/php/php_errors.log $HAWKDIR/eagle/log.txt"
+alias ports="sudo netstat -plnt"
+alias cd="pushd > /dev/null"
+alias cleard="dirs -c"
+alias ts="php $HAWKDIR/dev/tagger/search.php"
+alias tn="php $HAWKDIR/dev/tagger/search.php next"
+alias tp="php $HAWKDIR/dev/tagger/search.php specific"
+alias bs="php $HAWKDIR/dev/tagger/branch_search.php "
+alias uniq_f="awk '{print $1}' | cut -f 1 -d ':' | uniq"
+
+function annotate {
+    cd $HAWKDIR/magento && php ../dev/n98-magerun.phar dev:code:model:method $1 && cd -
+}
+
+function cmc {
+    cd $HAWKDIR/magento && php ../dev/n98-magerun.phar dev:code:model:method $1 && cd -
+}
+
+alias pq="php $HAWKDIR/eagle/bin/Billing_Cron ProcessQueue"
+alias v="sudo virt-manager"
+alias repl="php $HAWKDIR/dev/Search-Replace-DB-master/srdb.xennsoft.cli.php -h localhost -n xennsoft -u root -p '' -s 'xennsoft.com' -r 'wes.xen'"
+
+function gta {
+    git tag -a $2 -m "$1"
+}
+
+function fs {
+    find . -iname "*$1*"
+}
+
+PHPUNIT="$SELENIUM_DIR/vendor/bin/phpunit"
+
+alias selenium="java -jar $SELENIUM_SERVER"
+alias eunit="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml"
+alias eunit-all="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml --testsuite 'eagle-all'"
+alias eunit-addon="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml --testsuite 'eagle-addons'"
+alias munit="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml"
+alias munit-checkout="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'checkout'"
+alias munit-bonusbin="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bonusbin'"
+alias munit-bbpayment="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bbpayment'"
+
+JIRACLI="$HAWKDIR/dev/TicketCli/bin/ticket.php"
+DEVTOOLS="$HAWKDIR/dev/DevTools/src/app"
+alias toTag="php $HAWKDIR/dev/DevTools/src/app manifest:totag"
+alias missing="php $HAWKDIR/dev/DevTools/src/app manifest:missing"
+alias collisions="hhvm $HAWKDIR/dev/DevTools/src/app manifest:collisions"
+alias j="php $JIRACLI"
+alias d="hhvm $DEVTOOLS"
+alias t+="php $JIRACLI timer:start"
+alias t-="php $JIRACLI timer:stop"
+alias tl="php $JIRACLI timer:list"
+
+function paratest() {
+   $HAWKDIR/eagle/selenium/vendor/bin/paratest -p 10 -f --phpunit=$HAWKDIR/eagle/selenium/vendor/bin/phpunit $1
+}
+
+ISSUEFIELDS="id,title,status,state,client"
+ISSUEFIELDSEXP="id,title,status,state,client,content"
+alias ism="php $JIRACLI issue:find 'developer*=wes;status!=closed'"
+
+alias isf="php $JIRACLI issue:find --fields=$ISSUEFIELDS"
+alias isfe="php $JIRACLI issue:find --fields=$ISSUEFIELDSEXP"
+
+alias is="php $JIRACLI issue:find"
+alias cc="cd $D_MAG/var/cache && rm -rf * && cd -"

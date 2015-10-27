@@ -1,0 +1,34 @@
+" With a map leader it's possible to do extra key combinations
+" like <leader>w saves the current file
+let mapleader = ","
+let g:mapleader = ","
+
+set so=7
+set ignorecase "Ignore case when searching
+set hlsearch "Highlight search things
+set incsearch "Make search act like search in modern browsers
+set magic "Set magic on, for regular expressions
+set showmatch "Show matching bracets when text indicator is over them
+set mat=2 "How many tenths of a second to blink
+
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set smarttab
+
+set ai "Auto indent
+set si "Smart indet
+set wrap "Wrap lines
+
+noremap 0 ^
+imap jk <ESC>
+
+" Reselect visual block after indent
+vnoremap < <gv
+vnoremap > >gv
+
+" Map ; to :
+nnoremap ; :
+
+vnoremap rg :s/>get('\([^']\+\)')/>get\u\1()/g
+vnoremap rs :s/>set('\([^']\+\)', />set\u\1(/g
