@@ -105,7 +105,7 @@ alias gs="git status"
 alias gsh="git show"
 alias gshs="git show --stat"
 alias gl="git log"
-alias glnm="git log --no-merges"
+alias gln="git log --no-merges"
 alias ga="git add"
 alias gap="git add -p"
 alias gc="git commit"
@@ -120,6 +120,8 @@ alias gpu="git pull origin"
 alias gpr="git pull --rebase origin"
 alias gprb="git pull --rebase origin \`parse_git_branch\`"
 alias gprd="git pull --rebase origin develop"
+alias gprbf="git pull --rebase origin \`parse_git_branch\` && git fetch --tags"
+alias gprdf="git pull --rebase origin \`parse_git_branch\` && git fetch --tags"
 alias gf="git fetch"
 alias gt="git tag -a"
 alias gtd="git tag -d"
@@ -131,6 +133,7 @@ alias gstp="git stash pop"
 alias gsl="git stash list"
 alias gft="git fetch --tags"
 alias gfa="git fetch --all"
+alias gshf="git show --stat --name-only --pretty=\"format:\""
 
 alias gau="git update-index --assume-unchanged"
 alias gac="git update-index --no-assume-unchanged"
@@ -220,6 +223,7 @@ function tagn {
 
 #completely annihilate phpstorm
 alias kill_storm="ps aux | grep phpstorm | grep -v grep | tr -s ' ' | cut -d ' ' -f 2 | xargs kill -9"
+alias phpstorm="~/phpstorm/current.sh"
 
 alias hawk="pushd $HAWKDIR &>/dev/null"
 
@@ -231,6 +235,9 @@ alias wp="pushd $HAWKDIR/wordpress &>/dev/null"
 alias wpp="pushd $HAWKDIR/wordpress/$WP_CONTENT_DIR/plugins &>/dev/null"
 alias wpe="pushd $HAWKDIR/wordpress/$WP_CONTENT_DIR/plugins/xennsoft-eagle &>/dev/null"
 
+DTDIR="$HAWKDIR/dev/DevTools"
+DEVTOOLS="$DTDIR/src/app"
+
 D_MAG="$HAWKDIR/magento"
 D_MAGC="$D_MAG/app/code/local"
 D_MAGX="$D_MAGC/Xennsoft"
@@ -239,6 +246,7 @@ D_MAGFT="$D_MAGD/frontend/base/default/template"
 D_MAGAT="$D_MAGD/adminhtml/default/default/template"
 D_MAGAL="$D_MAGD/adminhtml/default/default/layout"
 D_MAGFL="$D_MAGD/frontend/base/default/layout"
+
 alias mag="pushd $D_MAG &>/dev/null"
 alias magc="pushd $D_MAGC &>/dev/null"
 alias magx="pushd $D_MAGX &>/dev/null"
@@ -247,6 +255,7 @@ alias magft="pushd $D_MAGFT &>/dev/null"
 alias magat="pushd $D_MAGAT &>/dev/null"
 alias magfl="pushd $D_MAGFL &>/dev/null"
 alias magal="pushd $D_MAGAL &>/dev/null"
+alias bonus="pushd $HAWKDIR/bonus/BonusV2 &>/dev/null"
 
 alias fuck="ibus restart"
 alias gtg="git tag --list | grep -i"
@@ -258,11 +267,14 @@ alias alllog="multitail /var/log/hhvm/error.log /var/log/php/php_errors.log $HAW
 alias ports="sudo netstat -plnt"
 alias cd="pushd > /dev/null"
 alias cleard="dirs -c"
-alias ts="php $HAWKDIR/dev/tagger/search.php"
-alias tn="php $HAWKDIR/dev/tagger/search.php next"
-alias tp="php $HAWKDIR/dev/tagger/search.php specific"
-alias bs="php $HAWKDIR/dev/tagger/branch_search.php "
+
+alias ts="php $DEVTOOLS tagger:tag"
+alias tn="php $DEVTOOLS tagger:tag -t next"
+alias tp="php $DEVTOOLS tagger:tag -t specific -s --"
+alias bs="php $DEVTOOLS tagger:branch"
+
 alias uniq_f="awk '{print $1}' | cut -f 1 -d ':' | uniq"
+
 
 function annotate {
     cd $HAWKDIR/magento && php ../dev/n98-magerun.phar dev:code:model:method $1 && cd -
@@ -280,34 +292,45 @@ function gta {
     git tag -a $2 -m "$1"
 }
 
-function fs {
-    find . -iname "*$1*"
-}
-
+HHVMD="hhvm -d xdebug.enable=1"
 PHPUNIT="$SELENIUM_DIR/vendor/bin/phpunit"
+MAGUNIT="$PHPUNIT -c $D_MAG/tests/unit/phpunit.xml"
+MAGUNITD="$MAGUNIT --verbose --debug"
 
+alias es="cd $SELENIUM_DIR"
+alias dev="cd $HAWKDIR/dev"
 alias selenium="java -jar $SELENIUM_SERVER"
 alias eunit="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml"
 alias eunit-all="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml --testsuite 'eagle-all'"
 alias eunit-addon="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml --testsuite 'eagle-addons'"
-alias munit="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml"
-alias munit-checkout="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'checkout'"
-alias munit-bonusbin="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bonusbin'"
-alias munit-bbpayment="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bbpayment'"
+alias sunit="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml"
+alias sunit-checkout="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'checkout'"
+alias sunit-bonusbin="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bonusbin'"
+alias sunit-bbpayment="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bbpayment'"
+alias sunit-all="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'all-checkout' --stop-on-error --stop-on-failure"
+alias munit="$MAGUNIT"
 
 JIRACLI="$HAWKDIR/dev/TicketCli/bin/ticket.php"
-DEVTOOLS="$HAWKDIR/dev/DevTools/src/app"
-alias toTag="php $HAWKDIR/dev/DevTools/src/app manifest:totag"
-alias missing="php $HAWKDIR/dev/DevTools/src/app manifest:missing"
-alias collisions="hhvm $HAWKDIR/dev/DevTools/src/app manifest:collisions"
+alias clientcopy="sudo php $DEVTOOLS Client:copy"
+alias toTag="php $DEVTOOLS manifest:totag"
+alias missing="php $DEVTOOLS manifest:missing"
+alias collisions="$DEVTOOLS manifest:collisions"
 alias j="php $JIRACLI"
 alias d="hhvm $DEVTOOLS"
+alias dhs="sudo hhvm $DEVTOOLS"
+alias dp="php $DEVTOOLS"
+alias ds="sudo php $DEVTOOLS"
 alias t+="php $JIRACLI timer:start"
 alias t-="php $JIRACLI timer:stop"
 alias tl="php $JIRACLI timer:list"
+alias hhvmd="$HHVMD"
 
 function paratest() {
    $HAWKDIR/eagle/selenium/vendor/bin/paratest -p 10 -f --phpunit=$HAWKDIR/eagle/selenium/vendor/bin/phpunit $1
+}
+
+function sqlrun() {
+    echo "$1" | mysql -u root
 }
 
 ISSUEFIELDS="id,title,status,state,client"
@@ -319,3 +342,13 @@ alias isfe="php $JIRACLI issue:find --fields=$ISSUEFIELDSEXP"
 
 alias is="php $JIRACLI issue:find"
 alias cc="cd $D_MAG/var/cache && rm -rf * && cd -"
+alias next="php ~/next.php"
+alias cur="php ~/next.php 1"
+alias migrate="sudo -u www-data php $D_MAG/shell/Migration.php"
+alias lessc="cd $D_MAG/var/cache && rm -rf * && php $D_MAG/shell/less_compile.php && cd -"
+
+alias vimhuge="vim -u \"NONE\""
+
+[ -s "/home/wcurtis/.dnx/dnvm/dnvm.sh" ] && . "/home/wcurtis/.dnx/dnvm/dnvm.sh" # Load dnvm
+
+alias branchDate="for k in \`git branch|perl -pe s/^..//\`;do echo -e \`git show --pretty=format:'%Cgreen%ci %Cblue%cr%Creset' $k|head -n 1\`\\t$k;done|sort -r"

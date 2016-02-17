@@ -39,8 +39,8 @@ set tm=500
 syntax enable "Enable syntax hl
 
 " Set font according to system
-  " set gfn=Consolas:h9:cANSI
-  set shell=/bin/bash
+" set gfn=Consolas:h9:cANSI
+set shell=/bin/bash\ --rcfile\ /home/wcurtis/.bashrc
 
 colorscheme molokai
 set t_Co=256
@@ -152,11 +152,6 @@ endfunc
 " Kill search highlight
 map <silent> <leader><cr> :noh<cr>
 
-" Smart way to move btw. windows
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
 
 " Use the arrows to something useful
 map <right> :bn<cr>

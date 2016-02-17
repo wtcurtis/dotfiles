@@ -32,3 +32,11 @@ nnoremap ; :
 
 vnoremap rg :s/>get('\([^']\+\)')/>get\u\1()/g
 vnoremap rs :s/>set('\([^']\+\)', />set\u\1(/g
+
+" Smart way to move btw. windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+nmap <leader>w <C-W><C-W>
