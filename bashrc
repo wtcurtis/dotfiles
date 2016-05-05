@@ -8,6 +8,7 @@
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
+PHPRC=/usr/local/etc/php/7.0/php-cli.ini
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -15,12 +16,17 @@ shopt -s histappend
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
+export PATH="$PATH:/Users/wescurtis/bin:./vendor/bin:./node_modules/.bin:/Users/wescurtis/.composer/vendor/bin"
+export myHome="/Users/wescurtis"
+
+WEBROOT="/usr/local/var/www/htdocs";
+CMSROOT="$WEBROOT/cms/trunk/html";
 
 HAWKDIR="/var/www/html/hawk"
 EAGLEDIR="$HAWKDIR/eagle"
 WP_CONTENT_DIR="wp-content"
 SELENIUM_DIR="$EAGLEDIR/selenium"
-SELENIUM_SERVER="/home/wcurtis/Downloads/selenium/selenium-server-standalone-2.45.0.jar"
+SELENIUM_SERVER="$myHome/Downloads/selenium/selenium-server-standalone-2.45.0.jar"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -34,7 +40,6 @@ function getBracketBranch {
     parse_git_branch | sed 's/\(.*\)/\[\1\]/'
 }
 
-#PS1="\[\e[1;32m\]\u\[\e[1;32m\]@\[\e[1;32m\]\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\]\$(parse_git_branch) \[\e[1;37m\]$ \[\e[0m\]"
 PS1="\[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
 
 # enable color support of ls and also add handy aliases
@@ -55,25 +60,27 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-alias ls='ls --color=auto'
+#alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 #alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 
 # some more ls aliases
 alias ll='ls -alF'
-alias la='ls -A'
-alias lls='ll --sort=time -r'
-alias l='ls -CF'
+alias l='ls -alF'
+#alias la='ls -A'
+#alias lls='ll --sort=time -r'
+#alias l='ls -CF'
 
 alias ..="cd ../"
 
 alias tmux="TERM=screen-256color tmux"
 
-alias te="tail -f /var/log/nginx/error.log";
+alias te="tail -f /usr/local/var/log/nginx/error.log";
+alias ve="vim /usr/local/var/log/nginx/error.log";
 alias teh="tail -f /var/log/hhvm/error.log -n 40";
 alias veh="vim /var/log/hhvm/error.log";
-alias tep="tail -f /var/log/php/php_errors.log -n 40";
+alias tep="tail -f /usr/local/var/log/php70-error.log";
 alias vep="vim /var/log/php/php_errors.log";
 alias teg="tail -f $HAWKDIR/eagle/log.txt -n 40";
 alias veg="vim $HAWKDIR/eagle/log.txt";
@@ -95,6 +102,7 @@ function pfind {
 
 #put file on local clipboard
 alias cb='xclip -selection c -i'
+alias cbm='pbcopy';
 
 stty werase undef
 bind 'C-w:unix-filename-rubout'
@@ -109,17 +117,18 @@ alias gln="git log --no-merges"
 alias ga="git add"
 alias gap="git add -p"
 alias gc="git commit"
+alias gca="git commit --amend"
 alias gd="git diff"
 alias gds="git diff --stat"
 alias gco="git checkout"
-alias gcod="git checkout develop"
+alias gcod="git checkout dev"
 alias gpo="git push origin"
 alias gpl="git push local"
 alias gpob="git push origin \`parse_git_branch\`"
 alias gpu="git pull origin"
 alias gpr="git pull --rebase origin"
 alias gprb="git pull --rebase origin \`parse_git_branch\`"
-alias gprd="git pull --rebase origin develop"
+alias gprd="git pull --rebase origin dev"
 alias gprbf="git pull --rebase origin \`parse_git_branch\` && git fetch --tags"
 alias gprdf="git pull --rebase origin \`parse_git_branch\` && git fetch --tags"
 alias gf="git fetch"
@@ -137,6 +146,11 @@ alias gshf="git show --stat --name-only --pretty=\"format:\""
 
 alias gau="git update-index --assume-unchanged"
 alias gac="git update-index --no-assume-unchanged"
+
+alias gnr="git svn rebase"
+alias gnd="git svn dcommit"
+alias gndr="git svn dcommit --dry-run"
+alias gcp="git cherry-pick"
 
 # Tab completion for git aliases
 function make-completion-wrapper () {
@@ -161,9 +175,37 @@ function title {
     echo -ne "\033]0;$1\007"
 }
 
+NGINXBASE="/usr/local/etc/nginx"
+alias sa="cd $NGINXBASE/sites-available && sudo vim && cd -"
+alias se="cd $NGINXBASE/sites-enabled && sudo vim && cd -"
 
-alias sa="cd /etc/nginx/sites-enabled && sudo vim && cd -"
+function ngensite() {
+    toSymlink=$NGINXBASE/sites-enabled/$1.conf
 
+    if [ -e $NGINXBASE/sites-available/$1.conf ]; then
+        ln -s $NGINXBASE/sites-available/$1.conf $toSymlink
+    else
+        echo "$toSymlink already exists."
+    fi
+}
+
+function ngdissite() {
+    toDelete=$NGINXBASE/sites-enabled/$1.conf
+
+    if [ -e $NGINXBASE/sites-available/$1.conf ]; then
+        rm $toDelete
+    else
+        echo "No such sites: $toDelete"
+    fi
+}
+
+alias nglist="ls -la $NGINXBASE/sites-enabled"
+alias nglista="ls -la $NGINXBASE/sites-available"
+alias ngrestart="sudo brew services restart nginx"
+alias ngreload="sudo brew services reload nginx"
+alias ngstop="sudo brew services stop nginx"
+alias astart="sudo apachectl start"
+alias astop="sudo apachectl stop"
 alias use_fpm="sudo service hhvm stop && sudo service php5-fpm start"
 alias use_hhvm="sudo service php5-fpm stop && sudo service hhvm start"
 
@@ -220,6 +262,19 @@ function tagn {
     git tag -a `tn $1` -m \'${*:2}\'
     ts $1
 }
+
+alias web="cd $WEBROOT"
+alias cms="cd $CMSROOT"
+alias apa="cd /etc/apache2"
+alias acnf="sudo vim /etc/apache2/httpd.conf"
+alias rapa="sudo apachectl restart"
+alias php7="brew services stop php53 && brew services start php70"
+alias php53="brew services stop php70 && brew services start php53"
+
+alias php7conf="cd /usr/local/etc/php/7.0 && sudo vim && cd -"
+alias php53conf="cd /usr/local/etc/php/5.3 && sudo vim && cd -"
+
+alias brews="brew services"
 
 #completely annihilate phpstorm
 alias kill_storm="ps aux | grep phpstorm | grep -v grep | tr -s ' ' | cut -d ' ' -f 2 | xargs kill -9"
@@ -293,62 +348,37 @@ function gta {
 }
 
 HHVMD="hhvm -d xdebug.enable=1"
-PHPUNIT="$SELENIUM_DIR/vendor/bin/phpunit"
-MAGUNIT="$PHPUNIT -c $D_MAG/tests/unit/phpunit.xml"
-MAGUNITD="$MAGUNIT --verbose --debug"
-
-alias es="cd $SELENIUM_DIR"
-alias dev="cd $HAWKDIR/dev"
-alias selenium="java -jar $SELENIUM_SERVER"
-alias eunit="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml"
-alias eunit-all="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml --testsuite 'eagle-all'"
-alias eunit-addon="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-eagle.xml --testsuite 'eagle-addons'"
-alias sunit="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml"
-alias sunit-checkout="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'checkout'"
-alias sunit-bonusbin="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bonusbin'"
-alias sunit-bbpayment="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'bbpayment'"
-alias sunit-all="$PHPUNIT -c $SELENIUM_DIR/configs/phpunit-magento.xml --testsuite 'all-checkout' --stop-on-error --stop-on-failure"
-alias munit="$MAGUNIT"
-
-JIRACLI="$HAWKDIR/dev/TicketCli/bin/ticket.php"
-alias clientcopy="sudo php $DEVTOOLS Client:copy"
-alias toTag="php $DEVTOOLS manifest:totag"
-alias missing="php $DEVTOOLS manifest:missing"
-alias collisions="$DEVTOOLS manifest:collisions"
-alias j="php $JIRACLI"
-alias d="hhvm $DEVTOOLS"
-alias dhs="sudo hhvm $DEVTOOLS"
-alias dp="php $DEVTOOLS"
-alias ds="sudo php $DEVTOOLS"
-alias t+="php $JIRACLI timer:start"
-alias t-="php $JIRACLI timer:stop"
-alias tl="php $JIRACLI timer:list"
-alias hhvmd="$HHVMD"
-
-function paratest() {
-   $HAWKDIR/eagle/selenium/vendor/bin/paratest -p 10 -f --phpunit=$HAWKDIR/eagle/selenium/vendor/bin/phpunit $1
-}
-
-function sqlrun() {
-    echo "$1" | mysql -u root
-}
-
-ISSUEFIELDS="id,title,status,state,client"
-ISSUEFIELDSEXP="id,title,status,state,client,content"
-alias ism="php $JIRACLI issue:find 'developer*=wes;status!=closed'"
-
-alias isf="php $JIRACLI issue:find --fields=$ISSUEFIELDS"
-alias isfe="php $JIRACLI issue:find --fields=$ISSUEFIELDSEXP"
-
-alias is="php $JIRACLI issue:find"
-alias cc="cd $D_MAG/var/cache && rm -rf * && cd -"
-alias next="php ~/next.php"
-alias cur="php ~/next.php 1"
-alias migrate="sudo -u www-data php $D_MAG/shell/Migration.php"
-alias lessc="cd $D_MAG/var/cache && rm -rf * && php $D_MAG/shell/less_compile.php && cd -"
 
 alias vimhuge="vim -u \"NONE\""
 
 [ -s "/home/wcurtis/.dnx/dnvm/dnvm.sh" ] && . "/home/wcurtis/.dnx/dnvm/dnvm.sh" # Load dnvm
 
 alias branchDate="for k in \`git branch|perl -pe s/^..//\`;do echo -e \`git show --pretty=format:'%Cgreen%ci %Cblue%cr%Creset' $k|head -n 1\`\\t$k;done|sort -r"
+
+MAPIDIR="/Users/wescurtis/src/mapi-server"
+PHPUNIT="$MAPIDIR/vendor/bin/phpunit"
+MAPI_UNIT="$MAPIDIR/phpunit.xml"
+PHPX="php -c /usr/local/etc/php/7.0/php-cli-xdebug.ini"
+
+alias mapi="cd $MAPIDIR"
+alias tmapi="tail -f $MAPIDIR/storage/logs/lumen.log"
+alias vmapi="vim $MAPIDIR/storage/logs/lumen.log"
+alias munit="$PHPUNIT --config=$MAPI_UNIT"
+alias munitx="$PHPX $PHPUNIT --config=$MAPI_UNIT"
+alias frontier="cd /Users/wescurtis/src/cms-v2/trunk/sites/partners.frontier"
+alias src="cd ~/src"
+alias phpx="$PHPX"
+
+alias dockersql="mysql -u root -psecret -h \$(docker-machine ip) -P 32771"
+alias svr="find $myHome/dev-local-bash -type f | xargs grep --color -i"
+
+function svnClone {
+    git svn clone $1 -T trunk -b branches -t tags
+}
+
+function svnBranches {
+    git branch trunk refs/remotes/origin/trunk
+    git branch staging refs/remotes/origin/staging
+    git branch production refs/remotes/origin/production
+}
+
