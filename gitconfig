@@ -2,6 +2,7 @@
     editor = vim
     filemode = false
 	autoclrf = true
+	autocrlf = input
 [user]
 	name = Wes Curtis
     email = wes.curtis@clearlink.com
@@ -17,3 +18,5 @@
 [merge]
 	tool = kdiff3
     renamelimit = 3000
+[commit]
+	verbose = true
