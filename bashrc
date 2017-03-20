@@ -9,6 +9,7 @@
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 PHPRC=/usr/local/etc/php/7.0/php-cli.ini
+MAPIWP=/Users/wescurtis/src/mapi-server/public/wp-updates
 etc=/usr/local/etc
 
 # append to the history file, don't overwrite it
@@ -17,7 +18,7 @@ shopt -s histappend
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
 HISTFILESIZE=2000
-export PATH="$PATH:/Users/wescurtis/bin:./vendor/bin:./node_modules/.bin:/Users/wescurtis/.composer/vendor/bin"
+export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH:/Users/wescurtis/bin:./vendor/bin:./node_modules/.bin:/Users/wescurtis/.composer/vendor/bin"
 export myHome="/Users/wescurtis"
 
 WEBROOT="/usr/local/var/www/htdocs";
@@ -99,6 +100,7 @@ bind 'C-w:unix-filename-rubout'
 
 PROMPT_COMMAND='history -a'
 
+alias gb="parse_git_branch"
 alias gs="git status"
 alias gsh="git show"
 alias gshs="git show --stat"
@@ -109,9 +111,13 @@ alias gap="git add -p"
 alias gc="git commit -v"
 alias gca="git commit --amend"
 alias gd="git diff"
+alias gdt="git diff --staged"
 alias gds="git diff --stat"
+alias gdst="git diff --stat --staged"
 alias gco="git checkout"
 alias gcod="git checkout dev"
+alias gcom="git checkout master"
+alias gcop="git checkout production"
 alias gpo="git push origin"
 alias gpl="git push local"
 alias gpob="git push origin \`parse_git_branch\`"
@@ -119,6 +125,7 @@ alias gpu="git pull origin"
 alias gpr="git pull --rebase origin"
 alias gprb="git pull --rebase origin \`parse_git_branch\`"
 alias gprd="git pull --rebase origin dev"
+alias gprm="git pull --rebase origin master"
 alias gprbf="git pull --rebase origin \`parse_git_branch\` && git fetch --tags"
 alias gprdf="git pull --rebase origin \`parse_git_branch\` && git fetch --tags"
 alias gf="git fetch"
@@ -126,6 +133,7 @@ alias gt="git tag -a"
 alias gtd="git tag -d"
 alias gtdr="git push origin :"
 alias gst="git stash"
+alias gsti="git stash --include-untracked"
 alias gsts="git stash show"
 alias gstsp="git stash show --patch"
 alias gstp="git stash pop"
@@ -133,6 +141,7 @@ alias gsl="git stash list"
 alias gft="git fetch --tags"
 alias gfa="git fetch --all"
 alias gshf="git show --stat --name-only --pretty=\"format:\""
+alias grs="git reset"
 
 alias gau="git update-index --assume-unchanged"
 alias gac="git update-index --no-assume-unchanged"
@@ -319,6 +328,16 @@ function tn {
   task $1 annotate ${@:2}
 }
 
+function tdr {
+  DAYS=2
+  task end.after:today-${1:-$DAYS}days completed
+}
+
+function tar {
+  DAYS=2
+  task entry.after:today-${1:-$DAYS}days list
+}
+
 alias t="task"
 alias tw="task ready"
 alias ta="task add"
@@ -330,3 +349,6 @@ alias nowutc="echo \"<?php echo (new DateTime('now', new DateTimeZone('UTC')))->
 function phpunitIndependent {
     for i in $(find tests -name '*Test.php'); do vendor/bin/phpunit --stop-on-failure $i || exit 255; done
 }
+
+alias gbo="git branch --sort=-committerdate"
+alias dcrrm="docker-compose run --rm"
