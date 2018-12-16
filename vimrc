@@ -254,7 +254,6 @@ set guitablabel=%t
 " Do :help cope if you are unsure what cope is. It's super useful!
 map <leader>cc :botright cope<cr>
 map <leader>n :cn<cr>
-map <leader>p :cp<cr>
 
 
 """"""""""""""""""""""""""""""
@@ -365,11 +364,12 @@ noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 map <leader>q :e ~/buffer<cr>
 au BufRead,BufNewFile ~/buffer iab <buffer> xh1 ===========================================
 
-map <leader>pp :setlocal paste!<cr>
-map <leader>pn :setlocal nopaste<cr>
+"map <leader>pp :setlocal paste!<cr>
+"map <leader>pn :setlocal nopaste<cr>
 
 map <leader>bb :cd ..<cr>
 
+let g:terraform_align=1
 call pathogen#infect()
 
 "delete the buffer; keep windows; create a scratch buffer if no buffers left
@@ -437,6 +437,7 @@ nnoremap <silent> <Plug>Kwbd :<C-u>Kwbd<CR>
 nmap <C-A> <Plug>Kwbd
 
 nmap <leader>w <C-W><C-W>
+nmap <leader>p <C-W>p
 nmap <leader>x :set paste<CR>i
 nmap <leader>v :set nopaste<CR>
 
@@ -511,4 +512,8 @@ nnoremap pl :! find \. -name '*.php' <bar> xargs -l1 php -l<CR>
 au BufNewFile,BufRead *.fs set syntax=fsharp
 
 "autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
+
+autocmd FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
+
+nmap ,h :nohlsearch<cr>
 
