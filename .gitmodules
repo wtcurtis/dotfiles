@@ -1,28 +1,34 @@
 [submodule "vim/bundle/nerdtree"]
-	path = vim/bundle/nerdtree
+	path = vim/pack/plugins/start/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
 [submodule "vim/bundle/delimitMate"]
-	path = vim/bundle/delimitMate
+	path = vim/pack/plugins/start/delimitMate
 	url = https://github.com/Raimondi/delimitMate.git
 [submodule "vim/bundle/vim-autoformat"]
-	path = vim/bundle/vim-autoformat
+	path = vim/pack/plugins/start/vim-autoformat
 	url = https://github.com/Chiel92/vim-autoformat.git
 [submodule "vim/bundle/airline"]
-	path = vim/bundle/airline
+	path = vim/pack/plugins/start/airline
 	url = https://github.com/bling/vim-airline.git
 [submodule "vim/bundle/vdebug"]
 	path = vim/bundle/vdebug
 	url = https://github.com/joonty/vdebug.git
 [submodule "vim/bundle/vim-fugitive"]
-    path = vim/bundle/vim-fugitive
+	path = vim/pack/plugins/start/vim-fugitive
     url = https://github.com/tpope/vim-fugitive.git
 [submodule "vim/bundle/surround"]
-    path = vim/bundle/vim-surround
+	path = vim/pack/plugins/start/vim-surround
     url = https://github.com/tpope/vim-surround.git
 
 [submodule "vim/bundle/vim-vue"]
-	path = vim/bundle/vim-vue
+	path = vim/pack/plugins/start/vim-vue
 	url = https://github.com/posva/vim-vue.git
 [submodule "vim/bundle/vim-hashicorp-tools"]
-	path = vim/bundle/vim-hashicorp-tools
+	path = vim/pack/plugins/start/vim-hashicorp-tools
 	url = https://github.com/hashivim/vim-hashicorp-tools.git
+[submodule "vim/pack/plugins/start/VimCompletesMe"]
+	path = vim/pack/plugins/start/VimCompletesMe
+	url = https://github.com/ajh17/VimCompletesMe
+[submodule "vim/pack/plugins/start/ctrlp"]
+	path = vim/pack/plugins/start/ctrlp
+	url = https://github.com/kien/ctrlp.vim
