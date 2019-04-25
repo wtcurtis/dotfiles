@@ -8,7 +8,8 @@
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
-PHPRC=/usr/local/etc/php/7.1/php-cli.ini
+PHPBASE=/usr/local/etc/php/7.2
+PHPRC=$PHPBASE/php-cli.ini
 MAPIWP=/Users/wescurtis/src/mapi-server/public/wp-updates
 etc=/usr/local/etc
 
@@ -19,17 +20,11 @@ shopt -s histappend
 HISTSIZE=10000000
 HISTFILESIZE=1000000
 export GOPATH="$HOME/src/go"
+export GO111MODULE=on
 
-export PATH="./vendor/bin:./node_modules/.bin:/usr/local/opt/php@7.1/bin:/usr/local/opt/coreutils/libexec/gnubin:$GOPATHBASE/bin:$PATH:/Users/wescurtis/bin:/Users/wescurtis/.composer/vendor/bin"
+export PATH="/usr/local/opt/php@7.2/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:/Users/wescurtis/bin:/Users/wescurtis/.composer/vendor/bin:./vendor/bin:./node_modules/.bin:$GOPATH/bin"
 export myHome="/Users/wescurtis"
 export ORIENTDB_HOME="/usr/local/opt/orientdb-2.2.26/bin"
-
-WEBROOT="/usr/local/var/www/htdocs";
-CMSROOT="$WEBROOT/cms/trunk/html";
-
-WP_CONTENT_DIR="wp-content"
-SELENIUM_DIR="$EAGLEDIR/selenium"
-SELENIUM_SERVER="$myHome/Downloads/selenium/selenium-server-standalone-2.45.0.jar"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -44,7 +39,9 @@ function getBracketBranch {
 }
 
 #PS1="\[\033[38;5;12m\][\d \t]\[$(tput sgr0)\] \[\e[1;32m\]\u \[\033[38;5;9m\](\$(aws_prof))\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
-PS1="\[\033[38;5;12m\][\d \t]\[$(tput sgr0)\] \[\e[1;32m\]\u \e[1;37m\]: \[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
+#PS1="\[\033[38;5;12m\][\d \t]\[$(tput sgr0)\] \[\e[1;32m\]\u \[\e[1;37m\]\]: \[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
+#PS1="\[\e[1;34m\][\d \t] \[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
+PS1="[\d \t] \[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
 
 # enable color support of ls and also add handy aliases
 
@@ -77,8 +74,8 @@ alias tmux="TERM=screen-256color tmux"
 
 alias ten="tail -f /usr/local/var/log/nginx/error.log";
 alias ven="vim /usr/local/var/log/nginx/error.log";
-alias tep="tail -f /usr/local/var/log/php71-error.log";
-alias vep="vim /usr/local/var/log/php71-error.log";
+alias tep="tail -f /usr/local/var/log/php70-error.log";
+alias vep="vim /usr/local/var/log/php70-error.log";
 
 #nuclear options for permissions
 function perm {
@@ -229,6 +226,8 @@ alias fai="find . -type f | xargs grep 2>/dev/null --color -i"
 alias fn="find . -name"
 #alias ff="find . -type f"
 
+alias gex="grep -v"
+
 function fz {
     find . -iname "*$1*"
 }
@@ -245,11 +244,6 @@ function ff {
 alias xg="xargs grep"
 alias xgi="xargs grep -i"
 
-alias tailb="tail -f $HAWKDIR/eagle/var/log/billing.log -n 40"
-alias vimb="vim $HAWKDIR/eagle/var/log/billing.log"
-alias taile="tail -f $HAWKDIR/eagle/log.txt -n 40"
-alias vime="vim $HAWKDIR/eagle/log.txt"
-
 #up 5 => go up 5 directories
 function up {
     for i in $(seq 1 $1); do cd ..; done
@@ -260,16 +254,11 @@ function tagn {
     ts $1
 }
 
-alias web="cd $WEBROOT"
-alias cms="cd $CMSROOT"
 alias apa="cd /etc/apache2"
 alias acnf="sudo vim /etc/apache2/httpd.conf"
 alias rapa="sudo apachectl restart"
 alias php7="brew services stop php53 && brew services start php70"
 alias php53="brew services stop php70 && brew services start php53"
-
-alias php7conf="cd /usr/local/etc/php/7.1 && sudo vim && cd -"
-alias php53conf="cd /usr/local/etc/php/5.3 && sudo vim && cd -"
 
 alias brews="brew services"
 alias brewsr="brew services restart"
@@ -283,13 +272,10 @@ alias kill_storm="ps aux | grep phpstorm | grep -v grep | tr -s ' ' | cut -d ' '
 alias fuck="ibus restart"
 alias gtg="git tag --list | grep -i"
 
-alias tf="sed 's/[-]/ /g' | awk '{print $NF,$0}' | sort -n"
-
 alias ports="sudo lsof -i -n -P | grep TCP"
 alias cd="pushd > /dev/null"
 alias cleard="dirs -c"
 
-alias uniq_f="awk '{print $1}' | cut -f 1 -d ':' | uniq"
 
 alias v="sudo virt-manager"
 
@@ -303,12 +289,10 @@ alias vimhuge="vim -u \"NONE\""
 
 [ -s "/home/wcurtis/.dnx/dnvm/dnvm.sh" ] && . "/home/wcurtis/.dnx/dnvm/dnvm.sh" # Load dnvm
 
-alias branchDate="for k in \`git branch|perl -pe s/^..//\`;do echo -e \`git show --pretty=format:'%Cgreen%ci %Cblue%cr%Creset' $k|head -n 1\`\\t$k;done|sort -r"
-
 MAPIDIR="/Users/wescurtis/src/mapi-server"
 PHPUNIT="$MAPIDIR/vendor/bin/phpunit"
 MAPI_UNIT="$MAPIDIR/phpunit.xml"
-PHPX="php -c /usr/local/etc/php/7.1/php-cli-xdebug.ini"
+PHPX="php -c $PHPBASE/php-cli-xdebug.ini"
 
 alias mapi="cd $MAPIDIR"
 alias tmapi="tail -f $MAPIDIR/storage/logs/lumen.log"
@@ -325,7 +309,6 @@ alias pux="$PHPX vendor/bin/phpunit"
 alias dockersql="mysql -u root -psecret -h \$(docker-machine ip) -P 32771"
 alias svr="find $myHome/dev-local-bash -type f | xargs grep --color -i"
 
-alias dp="docker ps"
 
 function svnClone {
     git svn clone $1 -T trunk -b branches -t tags
@@ -383,7 +366,13 @@ function phpunitIndependent {
 
 alias gbo="git branch --sort=-committerdate"
 alias dcrrm="docker-compose run --rm"
+alias dc="docker-compose"
 alias dm="docker-machine"
+alias dps="docker ps"
+alias d="docker"
+function dsh {
+    docker run -it $1 sh
+}
 
 alias hist="vim ~/.bash_history"
 alias aws_who="aws sts get-caller-identity"
@@ -464,6 +453,10 @@ PERL_LOCAL_LIB_ROOT="/Users/wescurtis/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_
 PERL_MB_OPT="--install_base \"/Users/wescurtis/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/Users/wescurtis/perl5"; export PERL_MM_OPT;
 
+BB="~/dotfiles/scripts/go-to-source"
+alias pr="$BB pr"
+alias bb="$BB"
+
 # tabtab source for serverless package
 # uninstall by removing these lines or running `tabtab uninstall serverless`
 [ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash
@@ -500,7 +493,7 @@ function ap() {
     aws_clear
 
     echo "[default]" > ~/.aws/credentials
-    awk "/\[$1/,/^$/" ~/.aws/base-creds | sed '1d' >> ~/.aws/credentials
+    awk "/\[$1\]/,/^$/" ~/.aws/base-creds | sed '1d' >> ~/.aws/credentials
     cat ~/.aws/base-creds >> ~/.aws/credentials
 
     export CURRENT_DEFAULT_AWS_PROFILE=$1
@@ -511,3 +504,8 @@ function ap() {
 
     aws_who
 }
+
+
+# tabtab source for slss package
+# uninstall by removing these lines or running `tabtab uninstall slss`
+[ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash

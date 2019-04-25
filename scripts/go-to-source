@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+import subprocess, re, sys, webbrowser, os, argparse
+
+def get_source_base(base_dir):
+    os.chdir(base_dir)
+
+    out = subprocess.check_output(['git', 'remote', '-v'], ).decode("utf-8")
+    lines = out.split('\n')
+    caps = set(filter(None, {extract_uri(l) for l in lines}))
+
+    if len(caps) == 0:
+        raise Exception("didn't find an origin we could use, remotes: \n" + out)
+
+    org = caps.pop()
+    if len(caps) > 0:
+        print("more than one origin found using {}".format(org), file=sys.stderr)
+
+    return org
+
+def extract_uri(uri):
+    base = extract_base(uri)
+    if base == None:
+        return None
+
+    return base + extract_path(uri)
+
+def extract_base(uri):
+    if 'bitbucket' in uri or 'bb' in uri:
+        return 'https://bitbucket.org'
+
+    if 'github' in uri or 'gh' in uri:
+        return 'https://github.com'
+
+    return None
+
+def extract_path(uri):
+    uri = re.sub(r'^[^\t]+\t+|\.git| \(fetch\)$| \(push\)', '', uri)
+    uri = re.sub(r'^ssh://|^https://', '', uri)
+    if ':' in uri:
+        lst = list(filter(None, uri.split(':')))[1:]
+    else:
+        lst = list(filter(None, uri.split('/')))[1:]
+    p = '/' + '/'.join(lst).lstrip('/')
+    return p
+
+def get_pr_url(uri):
+    if 'github' in uri:
+        return '{}/pulls'.format(uri)
+    return '{}/pull-requests'.format(uri)
+
+def get_root_url(base_dir):
+    return get_source_base(base_dir)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='find various URLs for a particular git repo (bitbucket, github)')
+    parser.add_argument('-u', '--url', action='store_true', help="only show the URL, don't open a browser")
+    parser.add_argument('-p', '--path', help="path to the git repo to get a URL for, defaults to current directory", default='.')
+    parser.add_argument('destination', choices=["pr", "root"], default="root", help="where to find a URL to (pull requests, or root)")
+    args = parser.parse_args()
+
+    url = get_root_url(args.path)
+    if args.destination == 'pr':
+        url = get_pr_url(url)
+
+    if args.url:
+        print(url)
+    else:
+        webbrowser.open(url)
+
