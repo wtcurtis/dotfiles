@@ -489,6 +489,8 @@ vnoremap fr :<C-U>execute  " find \. -name '*" . GetVisual() . "' " <bar> cwindo
 
 nnoremap pl :! find \. -name '*.php' <bar> xargs -l1 php -l<CR>
 
+noremap <leader>b :CtrlPBuffer<CR>
+
 au BufNewFile,BufRead *.fs set syntax=fsharp
 
 "autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
@@ -496,4 +498,7 @@ au BufNewFile,BufRead *.fs set syntax=fsharp
 autocmd FileType yaml setlocal tabstop=2 shiftwidth=2 softtabstop=2
 
 nmap ,h :nohlsearch<cr>
+
+let g:ctrlp_use_caching = 1
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 

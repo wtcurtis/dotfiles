@@ -21,8 +21,10 @@ HISTSIZE=10000000
 HISTFILESIZE=1000000
 export GOPATH="$HOME/src/go"
 export GO111MODULE=on
+export GOPRIVATE="bitbucket.org/clearlinkmartech/*"
 
-export PATH="/usr/local/opt/php@7.2/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:/Users/wescurtis/bin:/Users/wescurtis/.composer/vendor/bin:./vendor/bin:./node_modules/.bin:$GOPATH/bin"
+export PATH="/usr/local/opt/mysql@5.7/bin:/usr/local/opt/php@7.2/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:/Users/wescurtis/bin:/Users/wescurtis/.composer/vendor/bin:./vendor/bin:./node_modules/.bin:$GOPATH/bin:/usr/local/lib/node_modules/.bin"
+export PATH="/usr/local/opt/mysql-client/bin:$PATH"
 export myHome="/Users/wescurtis"
 export ORIENTDB_HOME="/usr/local/opt/orientdb-2.2.26/bin"
 
@@ -74,8 +76,8 @@ alias tmux="TERM=screen-256color tmux"
 
 alias ten="tail -f /usr/local/var/log/nginx/error.log";
 alias ven="vim /usr/local/var/log/nginx/error.log";
-alias tep="tail -f /usr/local/var/log/php70-error.log";
-alias vep="vim /usr/local/var/log/php70-error.log";
+alias tep="tail -f /usr/local/var/log/php71-error.log";
+alias vep="vim /usr/local/var/log/php71-error.log";
 
 #nuclear options for permissions
 function perm {
@@ -144,6 +146,9 @@ alias gfa="git fetch --all"
 alias gshf="git show --stat --name-only --pretty=\"format:\""
 alias grs="git reset"
 
+alias grc="git rebase --continue"
+alias gra="git rebase --abort"
+
 alias gau="git update-index --assume-unchanged"
 alias gac="git update-index --no-assume-unchanged"
 
@@ -153,6 +158,9 @@ alias gndr="git svn dcommit --dry-run"
 alias gn="git svn"
 alias gcp="git cherry-pick"
 alias gbt="git branch --sort=-committerdate"
+
+alias gbdm='git branch --merged | egrep -v "(^\*|master|dev|production)" | xargs git branch -d'
+
 
 # Set terminal title
 function title {
@@ -292,18 +300,18 @@ alias vimhuge="vim -u \"NONE\""
 MAPIDIR="/Users/wescurtis/src/mapi-server"
 PHPUNIT="$MAPIDIR/vendor/bin/phpunit"
 MAPI_UNIT="$MAPIDIR/phpunit.xml"
-PHPX="php -c $PHPBASE/php-cli-xdebug.ini"
+
+PHP="php"
+PHPUNIT="$PHP vendor/bin/phpunit"
+PHPX="$PHP -c $PHPBASE/php-cli-xdebug.ini"
 
 alias mapi="cd $MAPIDIR"
 alias tmapi="tail -f $MAPIDIR/storage/logs/lumen.log"
 alias vmapi="vim $MAPIDIR/storage/logs/lumen.log"
-alias munit="$PHPUNIT --config=$MAPI_UNIT"
-alias munitx="$PHPX $PHPUNIT --config=$MAPI_UNIT"
-alias frontier="cd /Users/wescurtis/src/cms-v2/trunk/sites/partners.frontier"
+
 alias src="cd ~/src"
 alias phpx="$PHPX"
-alias pu="phpunit --stop-on-failure"
-alias pur="phpunit"
+alias pu="$PHPUNIT --stop-on-failure"
 alias pux="$PHPX vendor/bin/phpunit"
 
 alias dockersql="mysql -u root -psecret -h \$(docker-machine ip) -P 32771"
@@ -370,6 +378,24 @@ alias dc="docker-compose"
 alias dm="docker-machine"
 alias dps="docker ps"
 alias d="docker"
+alias dl="docker logs"
+alias dk="docker kill"
+alias dka='docker kill $(docker ps -q)'
+alias dra='docker rm $(docker ps -q -a)'
+alias dr='docker run -it'
+
+function dsh {
+    docker run -it $1 sh
+}
+
+function desh {
+    docker exec -it $1 sh
+}
+
+function dcrrmf {
+    docker-compose run -f $1 --rm "${@:2}"
+}
+
 function dsh {
     docker run -it $1 sh
 }
@@ -454,7 +480,7 @@ PERL_MB_OPT="--install_base \"/Users/wescurtis/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/Users/wescurtis/perl5"; export PERL_MM_OPT;
 
 BB="~/dotfiles/scripts/go-to-source"
-alias pr="$BB pr"
+alias pr="$BB -d pr"
 alias bb="$BB"
 
 # tabtab source for serverless package
@@ -464,6 +490,25 @@ alias bb="$BB"
 # uninstall by removing these lines or running `tabtab uninstall sls`
 [ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.bash
  
+export AWS_USERNAME="wes.curtis"
+export AWS_ACCOUNT_ID="417857669004"
+export DEFAULT_AWS_PROFILE="devops"
+
+awsmfa() {
+  aws_clear
+  export AWS_PROFILE="${DEFAULT_AWS_PROFILE}"
+
+  response="$(aws sts get-session-token --serial-number "arn:aws:iam::${AWS_ACCOUNT_ID}:mfa/${AWS_USERNAME}" --token-code $1 --duration-seconds 129600)"
+  key_id="$(echo $response | jq -r .Credentials.AccessKeyId)"
+  secret_key="$(echo $response | jq -r .Credentials.SecretAccessKey)"
+  token="$(echo $response | jq -r .Credentials.SessionToken)"
+
+  export AWS_ACCESS_KEY_ID="${key_id}"
+  export AWS_SECRET_ACCESS_KEY="${secret_key}"
+  export AWS_SESSION_TOKEN="${token}"
+  export AWS_PROFILE="default"
+}
+
 aws_clear() {
   unset AWS_ACCESS_KEY_ID
   unset AWS_SECRET_ACCESS_KEY
@@ -472,13 +517,15 @@ aws_clear() {
 }
 
 awsmfa_ops() {
-  read -r KEY_ID SECRET_KEY SESSION_KEY <<< $(aws sts get-session-token --serial-number arn:aws:iam::879277251299:mfa/wescurtis --token-code $1 --duration-seconds 129600 --output text | awk -F "\t" '{print $2; print $4; print $5; }')
-
+  response="$(aws sts get-session-token --serial-number $2 --token-code $1 --duration-seconds 129600)"
+  key_id="$(echo $response | jq -r .Credentials.AccessKeyId)"
+  secret_key="$(echo $response | jq -r .Credentials.SecretAccessKey)"
+  token="$(echo $response | jq -r .Credentials.SessionToken)"
   cat << EOF > ~/.aws/credentials
 [default]
-aws_access_key_id = $KEY_ID
-aws_secret_access_key = $SECRET_KEY
-aws_session_token = $SESSION_KEY
+aws_access_key_id = $key_id
+aws_secret_access_key = $secret_key
+aws_session_token = $token
 EOF
 
   cat ~/.aws/base-creds >> ~/.aws/credentials
@@ -499,13 +546,50 @@ function ap() {
     export CURRENT_DEFAULT_AWS_PROFILE=$1
     echo $CURRENT_DEFAULT_AWS_PROFILE
     if [[ "$1" = "ops" ]]; then 
-        awsmfa_ops $2
+        awsmfa_ops $2 arn:aws:iam::879277251299:mfa/wescurtis
+    elif [[ "$1" = "devops" ]]; then
+        awsmfa_ops $2 arn:aws:iam::417857669004:mfa/wes.curtis
     fi
 
     aws_who
 }
 
+function clear_stack_policy() {
+    echo "aws cloudformation set-stack-policy --stack-policy-body '{ \"Statement\": [ { \"Effect\": \"Allow\", \"Action\": \"Update:*\", \"Principal\": \"*\", \"Resource\": \"*\" } ] }' --stack-name $1 --profile $AWS_PROFILE --region $AWS_REGION"
+}
+
+function jira() {
+    open https://clearlink.atlassian.net/browse/$1
+}
+
+function mr() {
+    curl -s https://mapi.clearlink.com/cpr/request/$1 | jq "${@:2}"
+}
+
+function promo() {
+    curl -s https://mapi.clearlink.com/cpr/promo/$1 | jq "${@:2}"
+}
+
+
+alias aws_prod="export AWS_REGION=us-east-1;export AWS_DEFAULT_REGION=us-east-1;export AWS_PROFILE=default"
+alias aws_stage="export AWS_REGION=us-west-1;export AWS_DEFAULT_REGION=us-west-1;export AWS_PROFILE=default"
+alias aws_martech_dev="export AWS_REGION=us-east-1;export AWS_DEFAULT_REGION=us-east-1;export AWS_PROFILE=martech_dev;export CLUSTER_NAME=not-prod"
+alias aws_martech_prod="export AWS_REGION=us-east-1;export AWS_DEFAULT_REGION=us-east-1;export AWS_PROFILE=martech_prod CLUSTER_NAME=general-production"
+alias aws_devops="export AWS_REGION=us-east-1;export AWS_DEFAULT_REGION=us-east-1;export AWS_PROFILE=default"
+
 
 # tabtab source for slss package
 # uninstall by removing these lines or running `tabtab uninstall slss`
 [ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash
+
+export DOCKER_BUILDKIT=0
+export SSH_KEY="~/.ssh/bitbucket_martech_team"
+
+alias services="aws ecs list-services --cluster $CLUSTER_NAME --query serviceArns"
+alias restart_ecs="aws ecs update-service --force-new-deployment --cluster $CLUSTER_NAME --service"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+export SSH_KEY_FILE=~/.ssh/bitbucket_martech_team

@@ -54,8 +54,8 @@ def get_root_url(base_dir):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='find various URLs for a particular git repo (bitbucket, github)')
     parser.add_argument('-u', '--url', action='store_true', help="only show the URL, don't open a browser")
-    parser.add_argument('-p', '--path', help="path to the git repo to get a URL for, defaults to current directory", default='.')
-    parser.add_argument('destination', choices=["pr", "root"], default="root", help="where to find a URL to (pull requests, or root)")
+    parser.add_argument('path', help="path to the git repo to get a URL for, defaults to current directory", default='.', nargs='?')
+    parser.add_argument('-d', '--destination', choices=["pr", "root"], default="root", help="where to find a URL to (pull requests, or root)")
     args = parser.parse_args()
 
     url = get_root_url(args.path)
