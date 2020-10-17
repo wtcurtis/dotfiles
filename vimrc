@@ -1,5 +1,29 @@
 source ~/.vimCommon
 
+set so=7
+set incsearch "Make search act like search in modern browsers
+set magic "Set magic on, for regular expressions
+set showmatch "Show matching bracets when text indicator is over them
+set mat=2 "How many tenths of a second to blink
+
+set expandtab
+set shiftwidth=4
+set tabstop=4
+set smarttab
+
+set ai "Auto indent
+set si "Smart indet
+set wrap "Wrap lines
+
+" Smart way to move btw. windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+vnoremap rg :s/>get('\([^']\+\)')/>get\u\1()/g
+vnoremap rs :s/>set('\([^']\+\)', />set\u\1(/g
+
 " Sets how many lines of history VIM has to remember
 set history=700
 
@@ -484,10 +508,6 @@ nnoremap gRc :execute " grep -srnw --binary-files=without-match --exclude-dir=.g
 
 " visual selection
 vnoremap gr :<C-U>execute  " grep -srnw --binary-files=without-match --exclude-dir=.git -e '" . GetVisual() . "' " <bar> cwindow<CR>
-
-vnoremap fr :<C-U>execute  " find \. -name '*" . GetVisual() . "' " <bar> cwindow<CR>
-
-nnoremap pl :! find \. -name '*.php' <bar> xargs -l1 php -l<CR>
 
 noremap <leader>b :CtrlPBuffer<CR>
 

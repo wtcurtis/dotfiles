@@ -5,9 +5,9 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
+# shut up os x let me bash in peace
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 PHPBASE=/usr/local/etc/php/7.2
 PHPRC=$PHPBASE/php-cli.ini
 MAPIWP=/Users/wescurtis/src/mapi-server/public/wp-updates
@@ -16,12 +16,9 @@ etc=/usr/local/etc
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=10000000
-HISTFILESIZE=1000000
 export GOPATH="$HOME/src/go"
 export GO111MODULE=on
-export GOPRIVATE="bitbucket.org/clearlinkmartech/*"
+export GOPRIVATE="bitbucket.org/clearlinkmartech/*,bitbucket.org/clearlinkit/*"
 
 export PATH="/usr/local/opt/mysql@5.7/bin:/usr/local/opt/php@7.2/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:/Users/wescurtis/bin:/Users/wescurtis/.composer/vendor/bin:./vendor/bin:./node_modules/.bin:$GOPATH/bin:/usr/local/lib/node_modules/.bin"
 export PATH="/usr/local/opt/mysql-client/bin:$PATH"
@@ -113,6 +110,7 @@ alias ga="git add"
 alias gap="git add -p"
 alias gc="git commit -v"
 alias gca="git commit --amend"
+alias gcf="git commit --fixup"
 alias gd="git diff"
 alias gdt="git diff --staged"
 alias gds="git diff --stat"
@@ -148,6 +146,7 @@ alias grs="git reset"
 
 alias grc="git rebase --continue"
 alias gra="git rebase --abort"
+alias gri="git rebase -i"
 
 alias gau="git update-index --assume-unchanged"
 alias gac="git update-index --no-assume-unchanged"
@@ -169,6 +168,10 @@ function title {
 
 function gpreb {
     git push $1 `parse_git_branch` "${@:2}"
+}
+
+function gras {
+    git rebase -i $1 --autosquash "${@:2}"
 }
 
 NGINXBASE="/usr/local/etc/nginx"
@@ -373,7 +376,9 @@ function phpunitIndependent {
 }
 
 alias gbo="git branch --sort=-committerdate"
+#alias dcr="docker-compose run --rm"
 alias dcrrm="docker-compose run --rm"
+#alias dcr="dcrrm"
 alias dc="docker-compose"
 alias dm="docker-machine"
 alias dps="docker ps"
@@ -400,7 +405,7 @@ function dsh {
     docker run -it $1 sh
 }
 
-alias hist="vim ~/.bash_history"
+alias hist="vim ~/.bash_eternal_history"
 alias aws_who="aws sts get-caller-identity"
 export KUBECONF="$HOME/.kube/config"
 export KNAMESPACE="default"
@@ -529,6 +534,9 @@ aws_session_token = $token
 EOF
 
   cat ~/.aws/base-creds >> ~/.aws/credentials
+  #export AWS_ACCESS_KEY_ID=$key_id
+  #export AWS_SECRET_ACCESS_KEY=$secret_key
+  #export AWS_SESSION_TOKEN=$token
 }
 
 function aws_prof() {
@@ -546,7 +554,7 @@ function ap() {
     export CURRENT_DEFAULT_AWS_PROFILE=$1
     echo $CURRENT_DEFAULT_AWS_PROFILE
     if [[ "$1" = "ops" ]]; then 
-        awsmfa_ops $2 arn:aws:iam::879277251299:mfa/wescurtis
+        AWS_PROFILE=ops awsmfa_ops $2 arn:aws:iam::879277251299:mfa/wescurtis
     elif [[ "$1" = "devops" ]]; then
         awsmfa_ops $2 arn:aws:iam::417857669004:mfa/wes.curtis
     fi
@@ -555,7 +563,7 @@ function ap() {
 }
 
 function clear_stack_policy() {
-    echo "aws cloudformation set-stack-policy --stack-policy-body '{ \"Statement\": [ { \"Effect\": \"Allow\", \"Action\": \"Update:*\", \"Principal\": \"*\", \"Resource\": \"*\" } ] }' --stack-name $1 --profile $AWS_PROFILE --region $AWS_REGION"
+    echo "aws cloudformation set-stack-policy --stack-policy-body '{ \"Statement\": [ { \"Effect\": \"Allow\", \"Action\": \"Update:*\", \"Principal\": \"*\", \"Resource\": \"*\" } ] }' --stack-name $1 --profile $AWS_PROFILE --region $AWS_REGION \"${@:2}\""
 }
 
 function jira() {
@@ -577,6 +585,8 @@ alias aws_martech_dev="export AWS_REGION=us-east-1;export AWS_DEFAULT_REGION=us-
 alias aws_martech_prod="export AWS_REGION=us-east-1;export AWS_DEFAULT_REGION=us-east-1;export AWS_PROFILE=martech_prod CLUSTER_NAME=general-production"
 alias aws_devops="export AWS_REGION=us-east-1;export AWS_DEFAULT_REGION=us-east-1;export AWS_PROFILE=default"
 
+alias brewn="HOMEBREW_NO_AUTO_UPDATE=1 brew"
+
 
 # tabtab source for slss package
 # uninstall by removing these lines or running `tabtab uninstall slss`
@@ -592,4 +602,34 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && . "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
-export SSH_KEY_FILE=~/.ssh/bitbucket_martech_team
+export SSH_KEY_FILE=~/.ssh/clearlinkit_team
+
+function bb_clone() {
+    git clone bitbucket:/$1 ${@:2}
+}
+
+function git_root() {
+    git rev-parse --show-toplevel || pwd
+}
+
+function dcr() {
+    docker-compose run --rm $@
+}
+
+alias scops="source ~/src/docker-images/pipeline-tools/venv/bin/activate"
+alias cops='~/src/cops/src/cops'
+alias dvr='docker run -v $(pwd):/app -w /app'
+alias dvrr='docker run -v $(git_root):/app -w /app'
+alias nv='dvr -v ~/.npmrc:/root/.npmrc -it node:alpine'
+alias npm='nv npm'
+alias yarn='dvr node:alpine yarn'
+alias mcp='make configure-production'
+alias mcs='make configure-staging'
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+export HISTCONTROL=ignoreboth
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+export HISTSIZE=10000000
+export HISTFILESIZE=1000000
+export HISTFILE=~/.bash_eternal_history
