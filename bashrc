@@ -15,6 +15,7 @@ etc=/usr/local/etc
 
 # append to the history file, don't overwrite it
 shopt -s histappend
+shopt -s extglob
 
 export GOPATH="$HOME/src/go"
 export GO111MODULE=on
@@ -37,9 +38,6 @@ function getBracketBranch {
     parse_git_branch | sed 's/\(.*\)/\[\1\]/'
 }
 
-#PS1="\[\033[38;5;12m\][\d \t]\[$(tput sgr0)\] \[\e[1;32m\]\u \[\033[38;5;9m\](\$(aws_prof))\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
-#PS1="\[\033[38;5;12m\][\d \t]\[$(tput sgr0)\] \[\e[1;32m\]\u \[\e[1;37m\]\]: \[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
-#PS1="\[\e[1;34m\][\d \t] \[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
 PS1="[\d \t] \[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
 
 # enable color support of ls and also add handy aliases
@@ -390,7 +388,7 @@ alias dra='docker rm $(docker ps -q -a)'
 alias dr='docker run -it'
 
 function dsh {
-    docker run -it $1 sh
+    docker run -it $1 "${@:2}" sh
 }
 
 function desh {
@@ -405,7 +403,12 @@ function dsh {
     docker run -it $1 sh
 }
 
-alias hist="vim ~/.bash_eternal_history"
+alias hist="vim $HISTFILE"
+alias histc="cat $HISTFILE"
+function histg {
+    grep "$@" -- $HISTFILE
+}
+
 alias aws_who="aws sts get-caller-identity"
 export KUBECONF="$HOME/.kube/config"
 export KNAMESPACE="default"
@@ -567,7 +570,7 @@ function clear_stack_policy() {
 }
 
 function jira() {
-    open https://clearlink.atlassian.net/browse/$1
+    open https://mygn.atlassian.net/browse/$1
 }
 
 function mr() {
@@ -593,6 +596,7 @@ alias brewn="HOMEBREW_NO_AUTO_UPDATE=1 brew"
 [ -f /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash ] && . /usr/local/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash
 
 export DOCKER_BUILDKIT=0
+export BUILDKIT_PROGRESS=plain
 export SSH_KEY="~/.ssh/bitbucket_martech_team"
 
 alias services="aws ecs list-services --cluster $CLUSTER_NAME --query serviceArns"
@@ -616,6 +620,10 @@ function dcr() {
     docker-compose run --rm $@
 }
 
+function gst_of() {
+    git stash "${@:2}" "stash@{$1}"
+}
+
 alias scops="source ~/src/docker-images/pipeline-tools/venv/bin/activate"
 alias cops='~/src/cops/src/cops'
 alias dvr='docker run -v $(pwd):/app -w /app'
@@ -633,3 +641,13 @@ export HISTCONTROL=ignoreboth
 export HISTSIZE=10000000
 export HISTFILESIZE=1000000
 export HISTFILE=~/.bash_eternal_history
+
+export VAULT_ADDR=https://vault.counsyl.com
+
+function pcr() {
+    for i in $@; do echo "https://internal.counsyl.com/helpdesk/brochure/pricecalculatorrequest/$i/change/"; done
+}
+
+function vimc() {
+    pbpaste | vim -
+}

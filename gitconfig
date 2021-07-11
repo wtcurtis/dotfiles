@@ -5,7 +5,7 @@
 	autocrlf = input
 [user]
     name = Wes Curtis
-    email = wes.curtis@clearlink.com
+    email = wesley.curtis@myriad.com
 [color]
     ui = auto
 [alias]
@@ -23,3 +23,5 @@
 
 [url "git@bitbucket.org:"]
 	insteadOf = https://bitbucket.org
+[checkout]
+    defaultRemote=origin

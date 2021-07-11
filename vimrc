@@ -40,6 +40,8 @@ nmap <leader>w :w!<cr>
 " Fast editing of the .vimrc
 map <leader>e :e! ~/.vimrc<cr>
 
+nmap <leader>p :w !pbcopy<cr>
+
 " When vimrc is edited, reload it
 autocmd! bufwritepost vimrc source ~/.vim_runtime/vimrc
 autocmd BufNewFile,BufReadPost *.md set filetype=markdown
@@ -272,12 +274,6 @@ autocmd BufWrite *.py :call DeleteTrailingWS()
 set guitablabel=%t
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Cope
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Do :help cope if you are unsure what cope is. It's super useful!
-map <leader>cc :botright cope<cr>
-map <leader>n :cn<cr>
 
 
 """"""""""""""""""""""""""""""
@@ -346,7 +342,7 @@ map <leader>f :MRU<CR>
 let g:CommandTMaxHeight = 15
 set wildignore+=*.o,*.obj,.git,*.pyc
 noremap <leader>j :CommandT<cr>
-noremap <leader>y :CommandTFlush<cr>
+noremap <leader>y "+y
 
 
 """"""""""""""""""""""""""""""
@@ -441,7 +437,6 @@ nnoremap <silent> <Plug>Kwbd :<C-u>Kwbd<CR>
 nmap <C-A> <Plug>Kwbd
 
 nmap <leader>w <C-W><C-W>
-nmap <leader>p <C-W>p
 nmap <leader>x :set paste<CR>i
 nmap <leader>v :set nopaste<CR>
 
@@ -521,4 +516,6 @@ nmap ,h :nohlsearch<cr>
 
 let g:ctrlp_use_caching = 1
 let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
+
+
 
