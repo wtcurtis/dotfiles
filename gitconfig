@@ -5,7 +5,8 @@
 	autocrlf = input
 [user]
     name = Wes Curtis
-    email = wesley.curtis@myriad.com
+    email = wtcurtis@gmail.com
+    signingkey = A2AEA8102FB76905
 [color]
     ui = auto
 [alias]
