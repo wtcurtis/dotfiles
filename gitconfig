@@ -21,6 +21,7 @@
     renamelimit = 3000
 [commit]
 	verbose = true
+	gpgsign = true
 
 [url "git@bitbucket.org:"]
 	insteadOf = https://bitbucket.org
