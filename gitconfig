@@ -5,8 +5,8 @@
 	autocrlf = input
 [user]
     name = Wes Curtis
-    email = wtcurtis@gmail.com
-    signingkey = A2AEA8102FB76905
+    email = wes.curtis@arivo.com
+    signingkey = 70AECDEF8BBC565A
 [color]
     ui = auto
 [alias]
@@ -25,5 +25,9 @@
 
 [url "git@bitbucket.org:"]
 	insteadOf = https://bitbucket.org
+[url "git@gitlab.com:"]
+	insteadOf = https://gitlab.com/
 [checkout]
     defaultRemote=origin
+[init]
+	defaultBranch = main

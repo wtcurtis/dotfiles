@@ -9,6 +9,8 @@
 # shut up os x let me bash in peace
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+source ~/.bash_secrets 2>/dev/null
+
 # append to the history file, don't overwrite it
 shopt -s histappend
 shopt -s extglob
@@ -17,10 +19,12 @@ shopt -s extglob
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-export GOPATH="$HOME/src/go"
+export GOPATH="$HOME/go"
+export GOROOT="$HOME/go/go1.18.3"
 export GO111MODULE=on
+export GOPRIVATE="gitlab.com/arivo-software-development/*"
 
-export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH:$HOME/.bin:./vendor/bin:./node_modules/.bin:$GOPATH/bin:/usr/local/lib/node_modules/.bin:/usr/local/go/bin"
+export PATH="$HOME/src/sre/infrastructure/util:$HOME/Library/Python/3.9/bin:$HOME/src/base-images/tools/bin:/opt/homebrew/opt/mysql-client/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:$HOME/.bin:$HOME/.tool-bin:./vendor/bin:/opt/homebrew/bin:./node_modules/.bin:$GOROOT/bin:$GOPATH/bin:/usr/local/lib/node_modules/.bin:/usr/local/go/bin"
 
 function parse_git_branch {
     git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
@@ -70,7 +74,7 @@ alias gds="git diff --stat"
 alias gdst="git diff --stat --staged"
 alias gco="git checkout"
 alias gcod="git checkout dev"
-alias gcom="git checkout master"
+alias gcom="git checkout main"
 alias gcop="git checkout production"
 alias gpo="git push origin"
 alias gpl="git push local"
@@ -189,6 +193,10 @@ function dsh {
     docker run -it $1 sh
 }
 
+function dshr {
+    docker run --user root -it $1 sh
+}
+
 alias hist="vim $HISTFILE"
 alias histc="cat $HISTFILE"
 function histg {
@@ -198,6 +206,10 @@ function histg {
 alias aws_who="aws sts get-caller-identity"
 export KUBECONF="$HOME/.kube/config"
 export KNAMESPACE="default"
+
+alias kc="kubectl"
+alias kdln="kubectl delete namespace"
+alias kcn="kubectl create namespace"
 
 function kns {
     export KNAMESPACE="$1"
@@ -216,7 +228,7 @@ function ks {
 }
 
 function kn {
-    kubectl -n $KNAMESPACE get namespaces "$@"
+    kubectl get namespaces "$@"
 }
 
 function kp {
@@ -266,7 +278,7 @@ function ka {
 }
 
 
-export DOCKER_BUILDKIT=0
+export DOCKER_BUILDKIT=1
 export BUILDKIT_PROGRESS=plain
 
 function gst_of() {
@@ -285,3 +297,30 @@ export VAULT_ADDR=https://vault.counsyl.com
 
 alias ave="aws-vault exec"
 
+AWS_DEFAULT_REGION=us-east-1
+AWS_REGION=us-east-1
+GPG_TTY=$(tty)
+
+alias gde="godotenv -f"
+
+alias br="repo -o browser"
+alias repoc="repo | pbcopy"
+alias pl="br -t pipelines"
+alias mr="br -t prs"
+alias pls="repo -t pipelines"
+alias jira="repo -t jira -o browser"
+alias jiras="repo -t jira"
+alias jirac="jiras | pbcopy"
+alias mrt="repo -t mrt | vim -"
+
+function gcasd() {
+    git clone gl:/arivo-software-development/$1 "${@:2}"
+}
+
+alias sc="vim ~/.ssh/config"
+
+export LC_CTYPE="en_US.UTF-8"
+alias pvim="pbpaste | vim -"
+function cf() {
+    cat "$1" | pbcopy
+}

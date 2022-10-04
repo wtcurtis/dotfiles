@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+exec curl -H "Authorization: Bearer ${GITLAB_PAT}" "https://gitlab.com/api/v4$1" "${@:2}"
+

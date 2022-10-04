@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+import re
+import subprocess
+import webbrowser
+
+from dataclasses import dataclass
+from typing import List, Mapping, Optional
+
+def exec(cmd: List[str], check=True, **kwargs):
+    return subprocess.run(cmd, check=check, capture_output=True)
+
+def get_branch() -> Optional[str]:
+    return exec(["git", "branch", "--show-current"]).stdout.strip().decode()
+
+@dataclass
+class Config:
+    prefixes: List[str]
+    suffixes: Mapping[str, str]
+    url: str
+    remote_type: str
+    name: str
+
+    def suffix(self, url_type: str) -> Optional[str]:
+        return self.suffixes.get(url_type, "/")
+
+    def prefix(self, remote_url: str) -> Optional[str]:
+        return next((p for p in conf.prefixes if p.match(remote_url)), None)
+
+
+parse_remote = re.compile(r'(\w+)\s+([^\s]+)?\s+\(([^\)]+)\)')
+branch_issue = re.compile(r'^([A-Z]+-[0-9]+)')
+config = [
+    Config(
+        prefixes=[
+            re.compile("^gl:/?arivo-software-development/"), 
+            re.compile("^git@gitlab.com/arivo-software-development/"),
+            re.compile("^gitlab:arivo-software-development"),
+        ],
+        suffixes={
+            "prs": "/-/merge_requests",
+            "pipelines": "/-/pipelines",
+        },
+        url="https://gitlab.com/arivo-software-development/%s%s",
+        remote_type="push",
+        name="origin",
+    )
+]
+
+jira_base = "https://arivo.atlassian.net"
+
+def get_config(line):
+    for conf in config:
+        result = parse_remote.match(line)
+        if not result:
+            continue
+        name, remote_url, remote_type = result.groups()
+        if remote_type == conf.remote_type and name == conf.name:
+            return conf, remote_url.replace(".git", "")
+
+    return None, None
+
+parser = argparse.ArgumentParser(description="git repo convenience utility")
+parser.add_argument('-t', '--type', default="base", help="URL type; prs, pipelines, jira")
+parser.add_argument('-o', '--output', default="string", help="output type; browser or string")
+
+def get_jira_url(branch):
+    matched = branch_issue.match(branch)
+    if not matched:
+        raise Exception(f"couldn't find jira ticket for branch {branch}")
+    ticket = matched.groups()[0]
+    return f"{jira_base}/browse/{ticket}"
+
+args = parser.parse_args()
+
+if __name__ == "__main__":
+    url_type = args.type
+
+    if url_type == "jira":
+        output_url = get_jira_url(get_branch())
+    elif url_type == "mrt":
+        print(f"""
+Note here
+Jira: {get_jira_url(get_branch())}
+MR: <complete me>
+""")
+        exit(0)
+    else:
+        result = exec(["git", "remote", "-v"])
+        output = result.stdout.decode()
+        for line in output.split('\n'):
+            conf, remote_url = get_config(line)
+            if conf is not None:
+                break
+
+        if not remote_url:
+            raise Exception(f"couldn't find remote config for output {output}")
+
+        prefix = conf.prefix(remote_url)
+        if not prefix:
+            raise Exception(f"couldn't find configured prefix for output {output}, url '{remote_url}'")
+        output_url = conf.url % (prefix.sub("", remote_url), conf.suffix(url_type))
+
+    if args.output == "browser":
+        webbrowser.open(output_url)
+    else:
+        print(output_url)
+

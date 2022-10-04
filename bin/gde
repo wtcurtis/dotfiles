@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+exec godotenv -f "$@"
+

@@ -190,8 +190,6 @@ map <leader>te :tabedit
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove 
 
-" When pressing <leader>cd switch to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>
 
 
 command! Bclose call <SID>BufcloseCloseIt()
@@ -439,6 +437,7 @@ nmap <C-A> <Plug>Kwbd
 nmap <leader>w <C-W><C-W>
 nmap <leader>x :set paste<CR>i
 nmap <leader>v :set nopaste<CR>
+nmap <leader>c :w !pbcopy<CR><CR>
 
 function! NT()
     if 0 == argc()
@@ -446,7 +445,7 @@ function! NT()
     end
 endfunction
 
-autocmd VimEnter * call NT()
+" autocmd VimEnter * call NT()
 au BufNewFile,BufRead *.twig set syntax=htmljinja
 
 "NERDTree Settings
@@ -454,8 +453,6 @@ au BufNewFile,BufRead *.twig set syntax=htmljinja
 nmap <silent> ,nt :NERDTreeToggle<cr>
 let NERDTreeShowHidden = 1
 
-" NERDComment
-map ,c <Leader>ci
 
 " Disable paste mode when leaving insert mode
 au InsertLeave * set nopaste
