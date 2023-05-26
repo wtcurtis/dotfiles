@@ -20,7 +20,7 @@ shopt -s extglob
 shopt -s checkwinsize
 
 export GOPATH="$HOME/go"
-export GOROOT="$HOME/go/go1.18.3"
+export GOROOT="/opt/homebrew/Cellar/go/1.20.4/libexec"
 export GO111MODULE=on
 export GOPRIVATE="gitlab.com/arivo-software-development/*"
 
@@ -34,7 +34,22 @@ function getBracketBranch {
     parse_git_branch | sed 's/\(.*\)/\[\1\]/'
 }
 
-PS1="[\d \t] \[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
+function getKNamespace {
+    echo $KNAMESPACE
+}
+
+export NPS="[\d \t] \[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
+export KPS="\[\e[36m\][\$(getKNamespace)][\$(kubectl config current-context)]\[\e[m\]\n[\d \t] \[\e[1;32m\]\u@\h\[\e[1;37m\]:\[\e[1;34m\]\w\[\e[1;31m\] \$(getBracketBranch) \[\e[1;37m\]$ \[\e[0m\]"
+export PS1=$NPS
+
+function kps {
+    export PS1="$KPS"
+}
+
+function nps {
+    export PS1="$NPS"
+}
+
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -75,7 +90,8 @@ alias gdst="git diff --stat --staged"
 alias gco="git checkout"
 alias gcod="git checkout dev"
 alias gcom="git checkout main"
-alias gcop="git checkout production"
+alias gcomt="git checkout master"
+alias gcop="git checkout -p"
 alias gpo="git push origin"
 alias gpl="git push local"
 alias gpob="git push origin \`parse_git_branch\`"
@@ -126,6 +142,20 @@ function gras {
 function gta {
     git tag -a $2 -m "$1"
 }
+
+function gtp {
+    git tag "$1" "${@:2}"
+    git push origin "$1"
+}
+
+function grt {
+    local tag="$1"
+    git push origin :$tag || echo "remote tag delete failed"
+    git tag -d $tag || echo "local tag delete failed"
+    git tag $tag
+    git push origin $tag
+}
+
 
 function fz {
     find . -iname "*$1*"
@@ -243,6 +273,10 @@ function ki {
     kubectl -n $KNAMESPACE get ingress "$@"
 }
 
+function kip {
+    kubectl -n $KNAMESPACE get -o yaml "$@"
+}
+
 function kd {
     kubectl -n $KNAMESPACE describe "$@"
 }
@@ -257,7 +291,7 @@ function kdl {
 
 function ktx {
     echo "namespace: $KNAMESPACE"
-    echo "context: "$(kubectl config current-context)
+    echo "context: $(kubectl config current-context)"
 }
 
 function ktxs {
@@ -277,6 +311,17 @@ function ka {
     kubectl -n $KNAMESPACE get all "$@"
 }
 
+function kaa {
+    kubectl get all --all-namespaces "$@" 
+}
+
+function ksh {
+    kubectl -n $KNAMESPACE exec -it "$1" "${@:2}"
+}
+
+function krs {
+    kubectl -n $KNAMESPACE rollout restart deployment "$@"
+}
 
 export DOCKER_BUILDKIT=1
 export BUILDKIT_PROGRESS=plain
@@ -301,8 +346,6 @@ AWS_DEFAULT_REGION=us-east-1
 AWS_REGION=us-east-1
 GPG_TTY=$(tty)
 
-alias gde="godotenv -f"
-
 alias br="repo -o browser"
 alias repoc="repo | pbcopy"
 alias pl="br -t pipelines"
@@ -312,6 +355,12 @@ alias jira="repo -t jira -o browser"
 alias jiras="repo -t jira"
 alias jirac="jiras | pbcopy"
 alias mrt="repo -t mrt | vim -"
+alias glh="goland ."
+alias pch="pycharm ."
+
+function glhr() {
+    goland "$(git rev-parse --show-toplevel)"
+}
 
 function gcasd() {
     git clone gl:/arivo-software-development/$1 "${@:2}"
@@ -324,3 +373,5 @@ alias pvim="pbpaste | vim -"
 function cf() {
     cat "$1" | pbcopy
 }
+
+export HUSKY=0
