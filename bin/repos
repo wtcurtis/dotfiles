@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+echo 200562263613.dkr.ecr.us-east-1.amazonaws.com
+echo 338767351607.dkr.ecr.us-east-1.amazonaws.com
+echo 713787426012.dkr.ecr.us-east-1.amazonaws.com
+echo registry.gitlab.com/arivo-software-development/base-images
+

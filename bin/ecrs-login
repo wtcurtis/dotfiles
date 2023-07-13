@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+avet ecr-login -r 200562263613.dkr.ecr.us-east-1.amazonaws.com
+aves ecr-login -r 338767351607.dkr.ecr.us-east-1.amazonaws.com
+avep ecr-login -r 713787426012.dkr.ecr.us-east-1.amazonaws.com

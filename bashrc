@@ -20,11 +20,11 @@ shopt -s extglob
 shopt -s checkwinsize
 
 export GOPATH="$HOME/go"
-export GOROOT="/opt/homebrew/Cellar/go/1.20.4/libexec"
+export GOROOT="/opt/homebrew/Cellar/go/1.20.5/libexec"
 export GO111MODULE=on
 export GOPRIVATE="gitlab.com/arivo-software-development/*"
 
-export PATH="$HOME/src/sre/infrastructure/util:$HOME/Library/Python/3.9/bin:$HOME/src/base-images/tools/bin:/opt/homebrew/opt/mysql-client/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:$HOME/.bin:$HOME/.tool-bin:./vendor/bin:/opt/homebrew/bin:./node_modules/.bin:$GOROOT/bin:$GOPATH/bin:/usr/local/lib/node_modules/.bin:/usr/local/go/bin"
+export PATH="$HOME/src/sre/infrastructure/util:$HOME/Library/Python/3.9/bin:$HOME/src/base-images/tools/bin:/opt/homebrew/bin:/opt/homebrew/opt/mysql-client/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH:$HOME/.bin:$HOME/.tool-bin:./vendor/bin:./node_modules/.bin:$GOROOT/bin:$GOPATH/bin:/usr/local/lib/node_modules/.bin:/usr/local/go/bin"
 
 function parse_git_branch {
     git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
@@ -220,7 +220,7 @@ function desh {
 }
 
 function dsh {
-    docker run -it $1 sh
+    docker run -it "$@" sh
 }
 
 function dshr {
@@ -357,6 +357,9 @@ alias jirac="jiras | pbcopy"
 alias mrt="repo -t mrt | vim -"
 alias glh="goland ."
 alias pch="pycharm ."
+
+alias gtv="go mod tidy && go mod vendor"
+alias dgtv='sh -c "go mod tidy && go mod vendor"'
 
 function glhr() {
     goland "$(git rev-parse --show-toplevel)"

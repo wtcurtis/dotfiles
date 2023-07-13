@@ -1,0 +1,1 @@
+docker login -u $GITLAB_USERNAME -p "$GITLAB_TOKEN" registry.gitlab.com

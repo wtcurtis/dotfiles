@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+ecrs-login
+gitlab-login
+repos

@@ -6,7 +6,8 @@
 [user]
     name = Wes Curtis
     email = wes.curtis@arivo.com
-    signingkey = 70AECDEF8BBC565A
+    #signingkey = 70AECDEF8BBC565A
+    signingkey = 4D3383066B6A8263
 [color]
     ui = auto
 [alias]
